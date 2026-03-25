@@ -1,0 +1,270 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Geist Fonts (local, sem dependência de rede) */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Tema escuro por padrão - Preto e Verde Neon */
+  --background: #000000;
+  --foreground: #e5e5e5;
+  --card: #0a0a0a;
+  --card-foreground: #e5e5e5;
+  --popover: #0a0a0a;
+  --popover-foreground: #e5e5e5;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #111111;
+  --secondary-foreground: #e5e5e5;
+  --muted: #171717;
+  --muted-foreground: #737373;
+  --accent: #ffffff;
+  --accent-foreground: #000000;
+  --destructive: #ff4444;
+  --destructive-foreground: #ffffff;
+  --border: #1a1a1a;
+  --input: #1a1a1a;
+  --ring: #ffffff;
+  --chart-1: #ffffff;
+  --chart-2: #00cc6a;
+  --chart-3: #00994d;
+  --chart-4: #006633;
+  --chart-5: #004422;
+  --radius: 0.625rem;
+  
+  /* Sidebar */
+  --sidebar: #050505;
+  --sidebar-foreground: #e5e5e5;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #111111;
+  --sidebar-accent-foreground: #e5e5e5;
+  --sidebar-border: #1a1a1a;
+  --sidebar-ring: #ffffff;
+  
+  /* Cores personalizadas */
+  --neon-verde: #ffffff;
+  --neon-verde-suave: #00cc6a;
+  --neon-verde-escuro: #004422;
+
+  /* Aparência customizável */
+  --bloom-opacity: 0.12;
+  --base-font-size: 16px;
+
+  /* Tema background */
+  --theme-bg-opacity: 0;
+}
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback', sans-serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-neon: var(--neon-verde);
+  --color-neon-suave: var(--neon-verde-suave);
+  --color-neon-escuro: var(--neon-verde-escuro);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Efeitos de Bloom/Glow */
+.bloom-verde {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: var(--bloom-opacity);
+  pointer-events: none;
+  background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+  transition: opacity 0.5s ease;
+}
+
+.bloom-1 {
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  right: -150px;
+  animation: flutuar 12s ease-in-out infinite;
+}
+
+.bloom-2 {
+  width: 400px;
+  height: 400px;
+  bottom: 5%;
+  left: 15%;
+  animation: flutuar 16s ease-in-out infinite reverse;
+}
+
+.bloom-3 {
+  width: 350px;
+  height: 350px;
+  top: 45%;
+  right: 15%;
+  animation: flutuar 20s ease-in-out infinite;
+}
+
+.bloom-4 {
+  width: 300px;
+  height: 300px;
+  top: 15%;
+  left: 40%;
+  animation: flutuar 14s ease-in-out infinite;
+}
+
+.bloom-5 {
+  width: 250px;
+  height: 250px;
+  bottom: 25%;
+  right: 35%;
+  animation: flutuar 18s ease-in-out infinite reverse;
+}
+
+@keyframes flutuar {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Glow em texto */
+.texto-neon {
+  text-shadow: 0 0 20px color-mix(in srgb, var(--primary) 25%, transparent),
+               0 0 40px color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+/* Borda com glow */
+.borda-neon {
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 15%, transparent),
+              0 0 20px color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track, #0a0a0a);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, #1a1a1a);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, #2a2a2a);
+}
+
+/* Remover setas de input number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ═══ Estilos de Cards ═══ */
+
+/* Glass (glassmorphism) */
+:root[data-card-style="glass"] {
+  --card: rgba(255, 255, 255, 0.03);
+  --sidebar: rgba(5, 5, 5, 0.7);
+}
+[data-card-style="glass"] .rounded-xl[class*="bg-card"],
+[data-card-style="glass"] [class*="bg-card\/"] {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Bordered */
+[data-card-style="bordered"] .rounded-xl[class*="bg-card"],
+[data-card-style="bordered"] [class*="bg-card\/"] {
+  border-width: 1.5px;
+  border-color: color-mix(in srgb, var(--primary) 15%, var(--border));
+}
+
+/* Grade de fundo oculta */
+:root[data-show-grid="false"] .bloom-grade {
+  display: none;
+}
+
+/* ═══ Overlay decorativo do tema ═══ */
+.theme-bg-overlay {
+  background-image: var(--theme-bg-image, none);
+  background-repeat: var(--theme-bg-repeat, repeat);
+  background-size: var(--theme-bg-size, 200px);
+  background-position: center;
+  opacity: var(--theme-bg-opacity, 0);
+  transition: opacity 0.5s ease;
+  mask-image: var(--theme-bg-mask, none);
+  -webkit-mask-image: var(--theme-bg-mask, none);
+}

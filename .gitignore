@@ -1,0 +1,48 @@
+# Dependências
+node_modules/
+
+# Build outputs
+dist-electron/
+dist-frontend/
+release/
+*.blockmap
+
+# Environment
+.env
+.env.*
+.env*.local
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDEs
+.vscode/
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Next.js (legado)
+.next/
+.vercel/
+next.user-config.*
+
+# v0 sandbox
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+.snowflake/
+.v0-trash/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Mentoria / notas pessoais
+mentoria.md
+
+# Misc
+*.tsbuildinfo

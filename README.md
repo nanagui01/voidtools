@@ -1,0 +1,202 @@
+<div align="center">
+
+<img src="https://i.imgur.com/sDMGB2X.png" alt="BrunnoClear V2" width="780">
+
+<br>
+
+# BrunnoClear V2
+
+Painel desktop all-in-one para Discord — ferramentas avançadas, monitoramento  
+em tempo real e gerenciamento multi-conta em uma interface clean e moderna.
+
+<br>
+
+[![Release](https://img.shields.io/github/v/release/brunnoxw/BrunnoClear-V2?style=for-the-badge&color=5865F2&label=VERS%C3%83O)](https://github.com/brunnoxw/BrunnoClear-V2/releases)
+&nbsp;&nbsp;
+[![Downloads](https://img.shields.io/github/downloads/brunnoxw/BrunnoClear-V2/total?style=for-the-badge&color=57F287&label=DOWNLOADS)](https://github.com/brunnoxw/BrunnoClear-V2/releases)
+&nbsp;&nbsp;
+[![Stars](https://img.shields.io/github/stars/brunnoxw/BrunnoClear-V2?style=for-the-badge&color=FEE75C&label=STARS)](https://github.com/brunnoxw/BrunnoClear-V2/stargazers)
+
+<br>
+
+### [⬇️ Baixar Última Versão](https://github.com/brunnoxw/BrunnoClear-V2/releases/latest)
+
+<sub>Windows • Instalação rápida • Auto-update integrado</sub>
+
+</div>
+
+<br>
+
+> [!CAUTION]
+> O uso de self-bots viola os [Termos de Serviço do Discord](https://discord.com/terms). Este software é fornecido apenas para fins educacionais. Use por sua conta e risco.
+
+<br>
+
+## 📌 O que é o BrunnoClear?
+
+O BrunnoClear V2 é uma aplicação desktop que centraliza **mais de 20 ferramentas** de gerenciamento de conta Discord em um único lugar. Tudo roda **100% localmente** na sua máquina — sem servidores externos, sem coleta de dados.
+
+<table>
+<tr>
+<td>🖥️ <b>100% Local</b><br><sub>Nenhum dado sai da sua máquina</sub></td>
+<td>🔄 <b>Auto-Update</b><br><sub>Atualiza sozinho a cada release</sub></td>
+<td>👥 <b>Multi-Conta</b><br><sub>Gerencie várias contas ao mesmo tempo</sub></td>
+<td>📡 <b>Tempo Real</b><br><sub>WebSocket para feedback instantâneo</sub></td>
+</tr>
+</table>
+
+<br>
+
+## 🧰 Ferramentas
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 💬 Mensagens
+| Ferramenta | O que faz |
+|:--|:--|
+| **Limpar DM** | Deleta suas mensagens de uma DM ou canal |
+| **Limpar DMs Abertas** | Limpa mensagens de todas as DMs de uma vez |
+| **Limpar Package** | Processa seu pacote de dados e deleta mensagens |
+| **Backup** | Salva mensagens com mídia, stickers e embeds |
+
+### 🏠 Servidores
+| Ferramenta | O que faz |
+|:--|:--|
+| **Clonar Servidor** | Copia canais, cargos, emojis e configs |
+| **Sair de Servidores** | Sai de todos os servidores em massa |
+| **Scraper de Ícones** | Coleta imagens de um canal e envia para outro |
+
+### 👤 Conta
+| Ferramenta | O que faz |
+|:--|:--|
+| **Remover Amigos** | Remove toda a lista de amigos |
+| **Fechar DMs** | Fecha todas as DMs abertas |
+| **Scanner de Tokens** | Encontra tokens salvas no sistema |
+| **Perfil** | Visualiza badges, Nitro e contas conectadas |
+
+</td>
+<td width="50%" valign="top">
+
+### 📞 Calls
+| Ferramenta | O que faz |
+|:--|:--|
+| **Desconectar** | Remove membros de canais de voz |
+| **Mover** | Move membros entre canais |
+| **Mutar / Ensurdecer** | Muta ou ensurdece em massa |
+| **Listar** | Lista participantes de uma call |
+| **Farm Call** | Entra e permanece em call automaticamente |
+
+### 📡 Monitoramento
+| Ferramenta | O que faz |
+|:--|:--|
+| **Calls** | Rastreia entrada/saída com duração |
+| **Mensagens** | Captura mensagens e menções em tempo real |
+| **Download** | Baixa automaticamente anexos monitorados |
+| **Multi-Token** | Monitora com várias contas simultâneas |
+
+### 🎨 Personalização
+| Ferramenta | O que faz |
+|:--|:--|
+| **Rich Presence** | Presence customizada no Discord |
+| **Temas** | Interface com temas e cores configuráveis |
+| **Prefix Commands** | Comandos por prefixo direto no chat |
+| **System Tray** | Status de tarefas na bandeja do sistema |
+
+</td>
+</tr>
+</table>
+
+<br>
+
+## 🚀 Começando
+
+<table>
+<tr>
+<td>
+
+**1.** &nbsp; Baixe o instalador na [página de releases](https://github.com/brunnoxw/BrunnoClear-V2/releases/latest)
+
+**2.** &nbsp; Execute o `.exe` — o app instala e abre automaticamente
+
+**3.** &nbsp; Adicione seu token Discord no painel de contas
+
+**4.** &nbsp; Conecte a conta e acesse as ferramentas pelo menu lateral
+
+</td>
+</tr>
+</table>
+
+> [!TIP]
+> O **Scanner de Tokens** pode encontrar automaticamente tokens salvas no seu Windows — você não precisa procurar manualmente.
+
+<br>
+
+## ❓ FAQ
+
+<details>
+<summary><b>É seguro usar?</b></summary>
+<br>
+O BrunnoClear roda 100% localmente. Nenhum dado é enviado para servidores externos. O código é aberto para verificação. Porém, o uso de self-bots pode resultar em banimento da sua conta Discord.
+</details>
+
+<details>
+<summary><b>Preciso ter Node.js instalado?</b></summary>
+<br>
+Não. O instalador (.exe) já inclui tudo que é necessário para rodar o aplicativo. Basta baixar e instalar.
+</details>
+
+<details>
+<summary><b>Como consigo meu token Discord?</b></summary>
+<br>
+Use o <b>Scanner de Tokens</b> integrado no app — ele encontra automaticamente tokens salvas no sistema. Alternativamente, você pode extrair manualmente pelo DevTools do Discord.
+</details>
+
+<details>
+<summary><b>O app atualiza sozinho?</b></summary>
+<br>
+Sim. O auto-updater verifica novas versões no GitHub Releases e atualiza automaticamente quando disponível.
+</details>
+
+<details>
+<summary><b>Funciona no Mac/Linux?</b></summary>
+<br>
+Atualmente o foco é Windows. Builds para Mac e Linux podem ser geradas a partir do código-fonte, mas não são testadas oficialmente.
+</details>
+
+<br>
+
+## 🤝 Contribuindo
+
+Encontrou um bug ou tem uma ideia? Abra uma [issue](https://github.com/brunnoxw/BrunnoClear-V2/issues).
+
+Quer contribuir com código? Fork → branch → PR. Toda ajuda é bem-vinda.
+
+<br>
+
+## 🔀 Por que um fork do discord.js-selfbot-v13?
+
+A biblioteca original `discord.js-selfbot-v13` foi **descontinuada** pelo autor. Para manter o BrunnoClear V2 funcionando e atualizado, este projeto utiliza um **fork próprio** mantido por [@brunnoxw](https://github.com/brunnoxw).
+
+> **O que muda com o fork:**
+>
+> - 🛑 &nbsp; A lib original **não recebe mais atualizações** — bugs e breaking changes da API do Discord ficam sem correção
+> - 🔧 &nbsp; O fork inclui **correções de bugs** que a versão original nunca vai resolver
+> - 🔄 &nbsp; **Compatibilidade contínua** com mudanças na API do Discord
+> - 🚀 &nbsp; **Melhorias e otimizações** específicas para o BrunnoClear
+> - 🛡️ &nbsp; **Suporte ativo** — se algo quebrar, é corrigido rapidamente
+
+<br>
+
+---
+
+<div align="center">
+
+<sub>Desenvolvido com 💜 por <a href="https://github.com/brunnoxw">@brunnoxw</a></sub>
+
+<br>
+
+<sub>Se o projeto te ajudou, deixa uma ⭐ — faz diferença!</sub>
+
+</div>

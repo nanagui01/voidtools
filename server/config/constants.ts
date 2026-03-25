@@ -1,0 +1,54 @@
+export const WS_EVENTS = {
+  CLIENT: {
+    TOOL_START: 'tool:start',
+    TOOL_PAUSE: 'tool:pause',
+    TOOL_RESUME: 'tool:resume',
+    TOOL_CANCEL: 'tool:cancel',
+    TOKEN_ADD: 'token:add',
+    TOKEN_REMOVE: 'token:remove',
+    TOKEN_CHECK: 'token:check',
+    SUBSCRIBE_LOGS: 'subscribe:logs',
+    UNSUBSCRIBE_LOGS: 'unsubscribe:logs',
+    AUDIO_TOGGLE_MUTE: 'audio:toggle-mute',
+    PING: 'ping',
+  },
+  SERVER: {
+    TOOL_PROGRESS: 'tool:progress',
+    TOOL_COMPLETED: 'tool:completed',
+    TOOL_ERROR: 'tool:error',
+    TOOL_LOG: 'tool:log',
+    TOKEN_STATUS: 'token:status',
+    TOKEN_UPDATED: 'token:updated',
+    LOG_ENTRY: 'log:entry',
+    SERVER_STATUS: 'server:status',
+    AUDIO_CHUNK: 'audio:chunk',
+    AUDIO_SPEAKING: 'audio:speaking',
+    AUDIO_MODE: 'audio:mode',
+    PONG: 'pong',
+    ERROR: 'error',
+  },
+} as const
+
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  RATE_LIMITED: 429,
+  INTERNAL_ERROR: 500,
+} as const
+
+export const TOOL_NAMES: Record<string, string> = {
+  'limpar-dm': 'Limpar DM',
+  'limpar-package': 'Limpar Package',
+  'limpar-dms-abertas': 'Limpar DMs Abertas',
+  'remover-amigos': 'Remover Amigos',
+  'remover-servidores': 'Remover Servidores',
+  'clonar-servidor': 'Clonar Servidor',
+  'scraper-icons': 'Scraper de Icons',
+  'fechar-dms': 'Fechar DMs',
+  'call-utils': 'Utilidades de Call',
+  'prefix-commands': 'Comandos Prefix',
+} as const
