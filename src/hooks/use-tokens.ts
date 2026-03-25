@@ -55,16 +55,9 @@ async function _fetchTokens() {
           _autoConnectLock = true
           const tokenToConnect = data[0].id
           api.connectToken(tokenToConnect)
-            .catch(() => {
-              api.removeToken(tokenToConnect).catch(() => {})
-              _tokens = _tokens.filter((t) => t.id !== tokenToConnect)
-              if (_activeTokenId === tokenToConnect) {
-                _activeTokenId = _tokens.length > 0 ? _tokens[0].id : null
-              }
-              notify()
-            })
+            .catch(() => {})
             .finally(() => { _autoConnectLock = false })
-        }
+        }}
       } else if (activeData.tokenId) {
         _activeTokenId = activeData.tokenId
       }

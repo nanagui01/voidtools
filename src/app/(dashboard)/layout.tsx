@@ -30,10 +30,15 @@ export default function LayoutDashboard() {
   }, [])
 
   useEffect(() => {
-    if (!loading && tokens.length === 0) {
-      setHasAccounts(false)
+    if (!loading && tokens.length === 0 && !checking) {
+      api.hasAccounts()
+        .then((res) => {
+          const data = res.data as { hasAccounts: boolean; count: number }
+          setHasAccounts(data.hasAccounts)
+        })
+        .catch(() => {})
     }
-  }, [loading, tokens.length])
+  }, [loading, tokens.length, checking])
 
   if (checking) {
     return (
