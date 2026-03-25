@@ -57,7 +57,7 @@ async function _fetchTokens() {
           api.connectToken(tokenToConnect)
             .catch(() => {})
             .finally(() => { _autoConnectLock = false })
-        }}
+        }
       } else if (activeData.tokenId) {
         _activeTokenId = activeData.tokenId
       }
