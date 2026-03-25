@@ -537,10 +537,10 @@ router.delete('/:id', async (req, res) => {
 })
 
 /**
- * Troca a token selecionada sem reconectar
+ * Troca a token selecionada e reconecta o client Discord
  * @returns {Object} Dados da nova token selecionada
  */
-router.post('/:id/switch', (_req, res) => {
+router.post('/:id/switch', async (_req, res) => {
   const token = storage.getTokenById(_req.params.id)
   if (!token) {
     res.status(404).json({
@@ -552,6 +552,16 @@ router.post('/:id/switch', (_req, res) => {
   }
 
   discord.setSelectedTokenId(token.id)
+
+  const needsReconnect = discord.getActiveToken() !== token.token || !discord.isConnected()
+
+  if (needsReconnect) {
+    try {
+      await discord.connect(token.token)
+    } catch (err) {
+      logger.warn('Tokens', `POST /switch userId=${token.user?.id} falha ao reconectar: ${err}`)
+    }
+  }
 
   const badges = (token as any).profileData?.badges || (token as any).badges || []
   const clientConnected = discord.getActiveToken() === token.token && discord.isConnected()
