@@ -21,6 +21,7 @@ import {
   Radio,
   ChevronDown,
   ChevronUp,
+  Copy,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
@@ -120,8 +121,10 @@ export default function PaginaSessao() {
         if (event.type === "join" && pIdx === -1) {
           updated.participants = [...updated.participants, {
             userId: event.userId,
-            username: event.username,
+            username: event.globalName || event.username,
             avatar: null,
+            avatarUrl: event.avatarUrl || undefined,
+            globalName: event.globalName || null,
             joinedAt: event.timestamp,
             totalTime: 0,
             events: [event],
@@ -399,6 +402,7 @@ function ParticipantCard({
   sessionActive: boolean
   allEvents: VoiceEvent[]
 }) {
+  const [copied, setCopied] = useState(false)
   const isInCall = !participant.leftAt
   const totalTime = isInCall && sessionActive
     ? participant.totalTime + (Date.now() - new Date(participant.joinedAt).getTime())
@@ -406,10 +410,34 @@ function ParticipantCard({
 
   const cameraTime = calcDurationBetween("camera_on", "camera_off", allEvents, participant.userId)
   const screenTime = calcDurationBetween("screen_on", "screen_off", allEvents, participant.userId)
+  const muteCount = participant.events.filter(e => e.type === "mute").length
 
-  const avatarUrl = participant.avatar
-    ? `https://cdn.discordapp.com/avatars/${participant.userId}/${participant.avatar}.png?size=64`
-    : undefined
+  const avatarUrl = participant.avatarUrl
+    || (participant.avatar
+      ? `https://cdn.discordapp.com/avatars/${participant.userId}/${participant.avatar}.png?size=64`
+      : undefined)
+
+  const hasCameraOn = (() => {
+    for (let i = participant.events.length - 1; i >= 0; i--) {
+      if (participant.events[i].type === "camera_on") return true
+      if (participant.events[i].type === "camera_off") return false
+    }
+    return false
+  })()
+
+  const hasScreenOn = (() => {
+    for (let i = participant.events.length - 1; i >= 0; i--) {
+      if (participant.events[i].type === "screen_on") return true
+      if (participant.events[i].type === "screen_off") return false
+    }
+    return false
+  })()
+
+  const copyId = () => {
+    navigator.clipboard.writeText(participant.userId)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
 
   return (
     <div className={`rounded-lg border px-3 py-2.5 ${
@@ -418,12 +446,34 @@ function ParticipantCard({
         : "border-border bg-card"
     }`}>
       <div className="flex items-center gap-2 mb-1.5">
-        <Avatar className="h-6 w-6">
+        <Avatar className="h-7 w-7">
           <AvatarImage src={avatarUrl} />
           <AvatarFallback className="text-[9px]">{participant.username?.[0]?.toUpperCase()}</AvatarFallback>
         </Avatar>
-        <span className="text-xs font-medium truncate flex-1">{participant.username}</span>
-        {isInCall && <Radio size={8} className="text-emerald-400 animate-pulse" />}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1">
+            <span className="text-xs font-medium truncate">{participant.globalName || participant.username}</span>
+            {isInCall && hasCameraOn && (
+              <span className="flex items-center gap-0.5 text-[8px] text-blue-400 bg-blue-500/10 px-1 py-0.5 rounded font-medium">
+                <Camera size={8} /> Câmera
+              </span>
+            )}
+            {isInCall && hasScreenOn && (
+              <span className="flex items-center gap-0.5 text-[8px] text-purple-400 bg-purple-500/10 px-1 py-0.5 rounded font-medium">
+                <Monitor size={8} /> Tela
+              </span>
+            )}
+          </div>
+          <button
+            onClick={copyId}
+            className="flex items-center gap-1 text-[9px] text-muted-foreground/60 hover:text-foreground transition-colors group/id"
+          >
+            <span className="font-mono">{participant.userId}</span>
+            <Copy size={8} className="opacity-0 group-hover/id:opacity-100 transition-opacity" />
+            {copied && <span className="text-emerald-400 text-[8px]">copiado!</span>}
+          </button>
+        </div>
+        {isInCall && <Radio size={8} className="text-emerald-400 animate-pulse shrink-0" />}
       </div>
 
       <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground">
@@ -434,13 +484,18 @@ function ParticipantCard({
           <Activity size={8} /> {participant.events.length} eventos
         </span>
         {cameraTime > 0 && (
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 text-blue-400">
             <Camera size={8} /> {formatDuration(cameraTime)}
           </span>
         )}
         {screenTime > 0 && (
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 text-purple-400">
             <Monitor size={8} /> {formatDuration(screenTime)}
+          </span>
+        )}
+        {muteCount > 0 && (
+          <span className="flex items-center gap-1 text-orange-400">
+            <MicOff size={8} /> {muteCount}× mutou
           </span>
         )}
       </div>

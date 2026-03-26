@@ -60,6 +60,23 @@ function formatDateShort(ts: string): string {
   return new Date(ts).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
 }
 
+function calcDurationBetween(startType: VoiceEventType, endType: VoiceEventType, events: VoiceEvent[]): number {
+  let total = 0
+  let lastStart: number | null = null
+  for (const e of events) {
+    if (e.type === startType && lastStart === null) {
+      lastStart = new Date(e.timestamp).getTime()
+    } else if (e.type === endType && lastStart !== null) {
+      total += new Date(e.timestamp).getTime() - lastStart
+      lastStart = null
+    }
+  }
+  if (lastStart !== null) {
+    total += Date.now() - lastStart
+  }
+  return total
+}
+
 function getDefaultAvatar(userId: string): string {
   const idx = parseInt(userId.slice(-1)) % 5
   return `https://cdn.discordapp.com/embed/avatars/${idx}.png`
@@ -173,6 +190,30 @@ function ParticipantCard({ participant }: { participant: CallParticipant }) {
   }
 
   const isActive = !participant.leftAt
+  const liveTime = isActive
+    ? participant.totalTime + (Date.now() - new Date(participant.joinedAt).getTime())
+    : participant.totalTime
+
+  const hasCameraOn = (() => {
+    for (let i = participant.events.length - 1; i >= 0; i--) {
+      if (participant.events[i].type === "camera_on") return true
+      if (participant.events[i].type === "camera_off") return false
+    }
+    return false
+  })()
+
+  const hasScreenOn = (() => {
+    for (let i = participant.events.length - 1; i >= 0; i--) {
+      if (participant.events[i].type === "screen_on") return true
+      if (participant.events[i].type === "screen_off") return false
+    }
+    return false
+  })()
+
+  const cameraTime = participant.cameraTime ?? calcDurationBetween("camera_on", "camera_off", participant.events)
+  const screenTime = participant.screenTime ?? calcDurationBetween("screen_on", "screen_off", participant.events)
+  const muteCount = participant.events.filter(e => e.type === "mute").length
+  const deafCount = participant.events.filter(e => e.type === "deaf").length
 
   return (
     <div className={`rounded-xl border ${isActive ? "border-emerald-500/30 bg-emerald-500/5" : "border-border/30 bg-card/50"} p-3 transition-all hover:border-border/60`}>
@@ -184,10 +225,20 @@ function ParticipantCard({ participant }: { participant: CallParticipant }) {
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <p className="text-sm font-semibold truncate">{participant.globalName || participant.username}</p>
             {participant.globalName && participant.globalName !== participant.username && (
               <span className="text-[10px] text-muted-foreground/60 truncate">@{participant.username}</span>
+            )}
+            {isActive && hasCameraOn && (
+              <span className="flex items-center gap-0.5 text-[9px] text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded font-medium">
+                <Video size={10} /> Câmera
+              </span>
+            )}
+            {isActive && hasScreenOn && (
+              <span className="flex items-center gap-0.5 text-[9px] text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded font-medium">
+                <Monitor size={10} /> Tela
+              </span>
             )}
           </div>
           <button
@@ -200,28 +251,56 @@ function ParticipantCard({ participant }: { participant: CallParticipant }) {
           </button>
         </div>
         <div className="text-right shrink-0">
-          <p className="text-sm font-mono font-bold">{formatDuration(participant.totalTime)}</p>
+          <p className="text-sm font-mono font-bold">{formatDuration(liveTime)}</p>
           {isActive && (
             <span className="text-[9px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">AO VIVO</span>
           )}
         </div>
       </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-2.5">
+        <div className="flex items-center gap-1.5 rounded-md bg-background/40 border border-border/15 px-2 py-1">
+          <PhoneIncoming size={9} className="text-emerald-400 shrink-0" />
+          <span className="text-[10px] text-muted-foreground">Entrou</span>
+          <span className="text-[10px] font-mono font-medium ml-auto">{formatTime(participant.joinedAt)}</span>
+        </div>
+        <div className="flex items-center gap-1.5 rounded-md bg-background/40 border border-border/15 px-2 py-1">
+          <PhoneOff size={9} className={`${participant.leftAt ? "text-red-400" : "text-emerald-400"} shrink-0`} />
+          <span className="text-[10px] text-muted-foreground">Saiu</span>
+          <span className="text-[10px] font-mono font-medium ml-auto">{participant.leftAt ? formatTime(participant.leftAt) : "—"}</span>
+        </div>
+        {cameraTime > 0 && (
+          <div className="flex items-center gap-1.5 rounded-md bg-blue-500/5 border border-blue-500/15 px-2 py-1">
+            <Video size={9} className="text-blue-400 shrink-0" />
+            <span className="text-[10px] text-blue-300/80">Câmera</span>
+            <span className="text-[10px] font-mono font-medium text-blue-400 ml-auto">{formatDuration(cameraTime)}</span>
+          </div>
+        )}
+        {screenTime > 0 && (
+          <div className="flex items-center gap-1.5 rounded-md bg-purple-500/5 border border-purple-500/15 px-2 py-1">
+            <Monitor size={9} className="text-purple-400 shrink-0" />
+            <span className="text-[10px] text-purple-300/80">Tela</span>
+            <span className="text-[10px] font-mono font-medium text-purple-400 ml-auto">{formatDuration(screenTime)}</span>
+          </div>
+        )}
+      </div>
+
       <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
-          <PhoneIncoming size={9} className="text-emerald-400" />
-          {formatTime(participant.joinedAt)}
+          <Activity size={9} /> {participant.events.length} eventos
         </span>
-        {participant.leftAt && (
-          <>
-            <span className="text-muted-foreground/30">—</span>
-            <span className="flex items-center gap-1">
-              <PhoneOff size={9} className="text-red-400" />
-              {formatTime(participant.leftAt)}
-            </span>
-          </>
+        {muteCount > 0 && (
+          <span className="flex items-center gap-1">
+            <MicOff size={9} className="text-orange-400" /> {muteCount}× mutou
+          </span>
         )}
-        <span className="ml-auto text-muted-foreground/50">{participant.events.length} eventos</span>
+        {deafCount > 0 && (
+          <span className="flex items-center gap-1">
+            <VolumeX size={9} className="text-orange-400" /> {deafCount}× ensurdeceu
+          </span>
+        )}
       </div>
+
       {participant.events.length > 0 && (
         <div className="mt-2 pt-2 border-t border-border/20">
           <EventSummaryPills events={participant.events} />
@@ -244,6 +323,14 @@ export default function CallsPage() {
   const [sessions, setSessions] = useState<CallSession[]>([])
   const [dailyStats, setDailyStats] = useState<DailyCallStat[]>([])
   const [expandedSession, setExpandedSession] = useState<string | null>(null)
+  const [, setTick] = useState(0)
+
+  const hasActive = sessions.some(s => s.active)
+  useEffect(() => {
+    if (!hasActive) return
+    const id = setInterval(() => setTick(t => t + 1), 1000)
+    return () => clearInterval(id)
+  }, [hasActive])
 
   const fetchData = useCallback(async () => {
     try {
@@ -295,14 +382,16 @@ export default function CallsPage() {
         if (existing) {
           updatedParticipants = updatedParticipants.map(p =>
             p.userId === event.userId
-              ? { ...p, joinedAt: now, leftAt: undefined, events: [...p.events, event] }
+              ? { ...p, joinedAt: now, leftAt: undefined, avatarUrl: event.avatarUrl || p.avatarUrl, globalName: event.globalName || p.globalName, events: [...p.events, event] }
               : p
           )
         } else {
           updatedParticipants.push({
             userId: event.userId,
-            username: event.username,
+            username: event.globalName || event.username,
             avatar: null,
+            avatarUrl: event.avatarUrl || undefined,
+            globalName: event.globalName || null,
             joinedAt: now,
             totalTime: 0,
             events: [event],
@@ -361,6 +450,8 @@ export default function CallsPage() {
     avatarUrl?: string
     globalName?: string | null
     totalTime: number
+    cameraTime: number
+    screenTime: number
     count: number
     lastSeen: string
   }>()
@@ -372,10 +463,14 @@ export default function CallsPage() {
         avatarUrl: p.avatarUrl,
         globalName: p.globalName,
         totalTime: 0,
+        cameraTime: 0,
+        screenTime: 0,
         count: 0,
         lastSeen: p.joinedAt,
       }
       entry.totalTime += p.totalTime
+      entry.cameraTime += p.cameraTime ?? calcDurationBetween("camera_on", "camera_off", p.events)
+      entry.screenTime += p.screenTime ?? calcDurationBetween("screen_on", "screen_off", p.events)
       entry.count++
       if (p.joinedAt > entry.lastSeen) entry.lastSeen = p.joinedAt
       if (p.avatarUrl) entry.avatarUrl = p.avatarUrl
@@ -442,25 +537,64 @@ export default function CallsPage() {
                     <span className="text-muted-foreground/30">·</span>
                     <span className="text-xs text-muted-foreground">Início: {formatTime(session.startedAt)}</span>
                     <span className="text-muted-foreground/30">·</span>
-                    <span className="text-xs font-mono font-semibold text-emerald-400">{formatDuration(session.totalDuration)}</span>
+                    <span className="text-xs font-mono font-semibold text-emerald-400">{formatDuration(Date.now() - new Date(session.startedAt).getTime())}</span>
                   </div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                {session.participants.map(p => (
-                  <div key={p.userId} className="flex items-center gap-2 rounded-lg bg-background/40 border border-border/20 px-2.5 py-1.5">
-                    <div className="relative">
-                      <ParticipantAvatar participant={p} size={28} />
-                      {!p.leftAt && (
-                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-background" />
-                      )}
+                {session.participants.map(p => {
+                  const pCamOn = (() => {
+                    for (let i = p.events.length - 1; i >= 0; i--) {
+                      if (p.events[i].type === "camera_on") return true
+                      if (p.events[i].type === "camera_off") return false
+                    }
+                    return false
+                  })()
+                  const pScreenOn = (() => {
+                    for (let i = p.events.length - 1; i >= 0; i--) {
+                      if (p.events[i].type === "screen_on") return true
+                      if (p.events[i].type === "screen_off") return false
+                    }
+                    return false
+                  })()
+                  const pCamTime = calcDurationBetween("camera_on", "camera_off", p.events)
+                  const pScreenTime = calcDurationBetween("screen_on", "screen_off", p.events)
+                  const pIsActive = !p.leftAt
+
+                  return (
+                    <div key={p.userId} className="flex items-center gap-2 rounded-lg bg-background/40 border border-border/20 px-2.5 py-1.5">
+                      <div className="relative">
+                        <ParticipantAvatar participant={p} size={28} />
+                        {pIsActive && (
+                          <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-background" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1">
+                          <p className="text-xs font-medium truncate max-w-[100px]">{p.globalName || p.username}</p>
+                          {pIsActive && pCamOn && <Video size={10} className="text-blue-400 shrink-0" />}
+                          {pIsActive && pScreenOn && <Monitor size={10} className="text-purple-400 shrink-0" />}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-[9px] font-mono text-muted-foreground">{formatDuration(p.leftAt ? p.totalTime : p.totalTime + (Date.now() - new Date(p.joinedAt).getTime()))}</p>
+                          {pCamTime > 0 && (
+                            <span className="text-[8px] font-mono text-blue-400 flex items-center gap-0.5"><Video size={7} />{formatDuration(pCamTime)}</span>
+                          )}
+                          {pScreenTime > 0 && (
+                            <span className="text-[8px] font-mono text-purple-400 flex items-center gap-0.5"><Monitor size={7} />{formatDuration(pScreenTime)}</span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => navigator.clipboard.writeText(p.userId)}
+                        className="text-muted-foreground/40 hover:text-muted-foreground transition-colors shrink-0"
+                        title="Copiar ID"
+                      >
+                        <Copy size={10} />
+                      </button>
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-medium truncate max-w-[100px]">{p.globalName || p.username}</p>
-                      <p className="text-[9px] font-mono text-muted-foreground">{formatDuration(p.totalTime)}</p>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
               {session.events.length > 0 && (
                 <div className="mt-2">
@@ -575,11 +709,28 @@ export default function CallsPage() {
                       onError={(e) => { (e.target as HTMLImageElement).src = getDefaultAvatar(p.userId) }}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{p.globalName || p.username}</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-sm font-medium truncate">{p.globalName || p.username}</p>
+                        {p.cameraTime > 0 && (
+                          <span className="flex items-center gap-0.5 text-[9px] text-blue-400">
+                            <Video size={9} />{formatDuration(p.cameraTime)}
+                          </span>
+                        )}
+                        {p.screenTime > 0 && (
+                          <span className="flex items-center gap-0.5 text-[9px] text-purple-400">
+                            <Monitor size={9} />{formatDuration(p.screenTime)}
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                         <span>{p.count} calls</span>
                         <span className="text-muted-foreground/30">·</span>
-                        <span className="font-mono opacity-0 group-hover:opacity-100 transition-opacity">{p.userId}</span>
+                        <button
+                          onClick={() => navigator.clipboard.writeText(p.userId)}
+                          className="font-mono opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground flex items-center gap-1"
+                        >
+                          {p.userId} <Copy size={8} />
+                        </button>
                       </div>
                     </div>
                     <span className="text-xs font-mono font-semibold text-muted-foreground">{formatDuration(p.totalTime)}</span>

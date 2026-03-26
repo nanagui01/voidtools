@@ -82,6 +82,7 @@ export default function MonitoramentoUserHome() {
   const [recentSessions, setRecentSessions] = useState<CallSession[]>([])
   const [recentEvents, setRecentEvents] = useState<VoiceEvent[]>([])
   const [recentMessages, setRecentMessages] = useState<MonitoredMessage[]>([])
+  const [, setTick] = useState(0)
 
   const fetchData = useCallback(async () => {
     try {
@@ -124,14 +125,16 @@ export default function MonitoramentoUserHome() {
         if (existing) {
           updatedParticipants = updatedParticipants.map(p =>
             p.userId === event.userId
-              ? { ...p, joinedAt: now, leftAt: undefined, events: [...p.events, event] }
+              ? { ...p, joinedAt: now, leftAt: undefined, avatarUrl: event.avatarUrl || p.avatarUrl, globalName: event.globalName || p.globalName, events: [...p.events, event] }
               : p
           )
         } else {
           updatedParticipants.push({
             userId: event.userId,
-            username: event.username,
+            username: event.globalName || event.username,
             avatar: null,
+            avatarUrl: event.avatarUrl || undefined,
+            globalName: event.globalName || null,
             joinedAt: now,
             totalTime: 0,
             events: [event],
@@ -175,6 +178,12 @@ export default function MonitoramentoUserHome() {
   const activeSessions = useMemo(() =>
     recentSessions.filter(s => s.active), [recentSessions]
   )
+
+  useEffect(() => {
+    if (activeSessions.length === 0) return
+    const id = setInterval(() => setTick(t => t + 1), 1000)
+    return () => clearInterval(id)
+  }, [activeSessions.length])
 
   const hourlyActivity = useMemo(() => {
     const hours = Array.from({ length: 24 }, (_, i) => ({ hour: `${i}h`, msgs: 0 }))

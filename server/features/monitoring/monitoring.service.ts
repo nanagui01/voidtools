@@ -381,6 +381,10 @@ class MonitoringService extends EventEmitter {
     this.voiceStates.set(userId, newVoice)
 
     const username = newState?.member?.user?.username || oldState?.member?.user?.username || userId
+    const user = newState?.member?.user || oldState?.member?.user
+    const avatarHash = user?.avatar || null
+    const userAvatarUrl = this.buildAvatarUrl(userId, avatarHash, user?.discriminator)
+    const userGlobalName = user?.globalName || null
     const guild = newState?.guild || oldState?.guild
     const guildName = guild?.name || 'Desconhecido'
     const guildId = guild?.id || ''
@@ -394,6 +398,8 @@ class MonitoringService extends EventEmitter {
       id: `ve_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`,
       userId,
       username,
+      avatarUrl: userAvatarUrl,
+      globalName: userGlobalName,
       type,
       timestamp: now,
       channelId: chId || newVoice.channelId || prevVoice.channelId || '',
@@ -484,6 +490,10 @@ class MonitoringService extends EventEmitter {
       if (!inSameChannel) continue
 
       const username = newState?.member?.user?.username || oldState?.member?.user?.username || userId
+      const user = newState?.member?.user || oldState?.member?.user
+      const avatarHash = user?.avatar || null
+      const participantAvatarUrl = this.buildAvatarUrl(userId, avatarHash, user?.discriminator)
+      const participantGlobalName = user?.globalName || null
       const now = new Date().toISOString()
 
       if (!oldState?.channelId && newState?.channelId === session.channelId) {
@@ -515,6 +525,8 @@ class MonitoringService extends EventEmitter {
           id: `ve_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`,
           userId,
           username,
+          avatarUrl: participantAvatarUrl,
+          globalName: participantGlobalName,
           type: 'join',
           timestamp: now,
           channelId: session.channelId,
@@ -538,6 +550,8 @@ class MonitoringService extends EventEmitter {
             id: `ve_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`,
             userId,
             username,
+            avatarUrl: participantAvatarUrl,
+            globalName: participantGlobalName,
             type: 'leave',
             timestamp: now,
             channelId: session.channelId,
@@ -567,6 +581,8 @@ class MonitoringService extends EventEmitter {
               id: `ve_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`,
               userId,
               username,
+              avatarUrl: participantAvatarUrl,
+              globalName: participantGlobalName,
               type,
               timestamp: now,
               channelId: session.channelId,
@@ -675,6 +691,8 @@ class MonitoringService extends EventEmitter {
         p.leftAt = now
         p.totalTime += Date.now() - new Date(p.joinedAt).getTime()
       }
+      p.cameraTime = this.calcDurationBetween('camera_on', 'camera_off', p.events)
+      p.screenTime = this.calcDurationBetween('screen_on', 'screen_off', p.events)
     }
 
     monitoringStorage.saveSession(session)
@@ -1136,6 +1154,23 @@ class MonitoringService extends EventEmitter {
     if (h > 0) return `${h}h${m % 60}m`
     if (m > 0) return `${m}m${s % 60}s`
     return `${s}s`
+  }
+
+  private calcDurationBetween(startType: string, endType: string, events: any[]): number {
+    let total = 0
+    let lastStart: number | null = null
+    for (const e of events) {
+      if (e.type === startType && lastStart === null) {
+        lastStart = new Date(e.timestamp).getTime()
+      } else if (e.type === endType && lastStart !== null) {
+        total += new Date(e.timestamp).getTime() - lastStart
+        lastStart = null
+      }
+    }
+    if (lastStart !== null) {
+      total += Date.now() - lastStart
+    }
+    return total
   }
 }
 

@@ -52,6 +52,8 @@ export interface VoiceEvent {
   id: string
   userId: string
   username: string
+  avatarUrl?: string | null
+  globalName?: string | null
   type: VoiceEventType
   timestamp: string
   channelId: string
@@ -70,6 +72,8 @@ export interface CallParticipant {
   joinedAt: string
   leftAt?: string
   totalTime: number
+  cameraTime?: number
+  screenTime?: number
   events: VoiceEvent[]
 }
 
