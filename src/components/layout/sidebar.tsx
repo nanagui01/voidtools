@@ -167,7 +167,7 @@ function AppVersion() {
 
 export function Sidebar() {
   const caminhoAtual = useLocation().pathname
-  const { tokens, activeTokenId, switchAccount, connecting, removeToken, refetch } = useTokens()
+  const { tokens, activeTokenId, switchAccount, connecting, switchCooldownRemaining, removeToken, refetch } = useTokens()
   const [contasAbertas, setContasAbertas] = useState(false)
   const [addModalOpen, setAddModalOpen] = useState(false)
   const contasRef = useRef<HTMLDivElement>(null)
@@ -195,6 +195,9 @@ export function Sidebar() {
 
   const outrasContas = tokens.filter((t) => t.id !== activeTokenId)
 
+  const switchOnCooldown = switchCooldownRemaining > 0
+  const cooldownSeconds = Math.ceil(switchCooldownRemaining / 1000)
+
   const trocarConta = async (tokenId: string) => {
     const target = tokens.find((t) => t.id === tokenId)
     setContasAbertas(false)
@@ -207,8 +210,14 @@ export function Sidebar() {
           icon: target.avatarUrl || undefined,
         })
       }
-    } catch {
-      if (target) {
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : ''
+      if (msg.startsWith('Aguarde')) {
+        window.electronAPI?.notification.show({
+          title: "BrunnoClear",
+          body: msg,
+        })
+      } else if (target) {
         window.electronAPI?.notification.show({
           title: "BrunnoClear",
           body: `Falha ao conectar em ${target.user?.global_name || target.user?.username || target.label}`,
@@ -328,7 +337,7 @@ export function Sidebar() {
                         <button
                           key={token.id}
                           onClick={() => trocarConta(token.id)}
-                          disabled={connecting}
+                          disabled={connecting || switchOnCooldown}
                           className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all hover:bg-secondary/80 disabled:opacity-50"
                         >
                           <Avatar className="h-8 w-8 shrink-0">
@@ -403,7 +412,7 @@ export function Sidebar() {
                     )}
                   </div>
                   <span className="text-[11px] text-muted-foreground">
-                    {connecting ? "Conectando..." : contaAtiva.status === "valid" ? "Conectada" : contaAtiva.status === "checking" ? "Verificando..." : "Inválida"}
+                    {connecting ? "Conectando..." : switchOnCooldown ? `Aguarde ${cooldownSeconds}s` : contaAtiva.status === "valid" ? "Conectada" : contaAtiva.status === "checking" ? "Verificando..." : "Inválida"}
                   </span>
                 </div>
                 <ChevronUp size={16} className={cn(

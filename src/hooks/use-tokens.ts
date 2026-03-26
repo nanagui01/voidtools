@@ -10,6 +10,11 @@ let _loading = true
 let _connecting = false
 let _autoConnectLock = false
 let _fetchLock = false
+let _switching = false
+let _lastSwitchTime = 0
+let _cooldownRemaining = 0
+let _cooldownInterval: ReturnType<typeof setInterval> | null = null
+const SWITCH_COOLDOWN_MS = 20_000
 const _listeners = new Set<() => void>()
 let _version = 0
 
@@ -25,6 +30,18 @@ function subscribe(listener: () => void) {
 
 function getSnapshot() {
   return _version
+}
+
+function _startCooldownTimer() {
+  if (_cooldownInterval) clearInterval(_cooldownInterval)
+  _cooldownRemaining = Math.max(0, SWITCH_COOLDOWN_MS - (Date.now() - _lastSwitchTime))
+  _cooldownInterval = setInterval(() => {
+    _cooldownRemaining = Math.max(0, SWITCH_COOLDOWN_MS - (Date.now() - _lastSwitchTime))
+    if (_cooldownRemaining <= 0) {
+      if (_cooldownInterval) { clearInterval(_cooldownInterval); _cooldownInterval = null }
+    }
+    notify()
+  }, 1000)
 }
 
 async function _fetchTokens() {
@@ -51,13 +68,19 @@ async function _fetchTokens() {
       const active = await api.getActiveToken().catch(() => null)
       const activeData = active?.data as { connected: boolean; tokenId?: string } | undefined
       if (activeData?.connected && activeData.tokenId) {
-        _activeTokenId = activeData.tokenId
+        if (!_switching) {
+          _activeTokenId = activeData.tokenId
+        }
       } else if (!_initialFetchDone && !_autoConnectLock) {
         _autoConnectLock = true
         const tokenToConnect = data[0].id
-        api.connectToken(tokenToConnect)
-          .catch(() => {})
-          .finally(() => { _autoConnectLock = false })
+        try {
+          await api.connectToken(tokenToConnect)
+          _activeTokenId = tokenToConnect
+        } catch {
+        } finally {
+          _autoConnectLock = false
+        }
       }
     }
   } catch {
@@ -105,18 +128,28 @@ export function useTokens() {
   }, [])
 
   const switchAccount = useCallback(async (id: string) => {
+    const elapsed = Date.now() - _lastSwitchTime
+    if (_lastSwitchTime > 0 && elapsed < SWITCH_COOLDOWN_MS) {
+      const remaining = Math.ceil((SWITCH_COOLDOWN_MS - elapsed) / 1000)
+      throw new Error(`Aguarde ${remaining}s para trocar de conta`)
+    }
+
     const prevId = _activeTokenId
     _activeTokenId = id
     _connecting = true
+    _switching = true
     notify()
     try {
       await api.switchToken(id)
+      _lastSwitchTime = Date.now()
+      _startCooldownTimer()
     } catch (err) {
       _activeTokenId = prevId
       notify()
       throw err
     } finally {
       _connecting = false
+      _switching = false
       notify()
     }
   }, [])
@@ -129,6 +162,7 @@ export function useTokens() {
     connecting: _connecting,
     activeToken,
     activeTokenId: _activeTokenId,
+    switchCooldownRemaining: _cooldownRemaining,
     setActiveTokenId: (id: string | null) => { _activeTokenId = id; notify() },
     switchAccount,
     addToken,
