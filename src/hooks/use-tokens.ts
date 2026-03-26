@@ -50,22 +50,21 @@ async function _fetchTokens() {
     if (data.length > 0) {
       const active = await api.getActiveToken().catch(() => null)
       const activeData = active?.data as { connected: boolean; tokenId?: string } | undefined
-      if (!activeData?.connected) {
-        if (!_autoConnectLock) {
-          _autoConnectLock = true
-          const tokenToConnect = data[0].id
-          api.connectToken(tokenToConnect)
-            .catch(() => {})
-            .finally(() => { _autoConnectLock = false })
-        }
-      } else if (activeData.tokenId) {
+      if (activeData?.connected && activeData.tokenId) {
         _activeTokenId = activeData.tokenId
+      } else if (!_initialFetchDone && !_autoConnectLock) {
+        _autoConnectLock = true
+        const tokenToConnect = data[0].id
+        api.connectToken(tokenToConnect)
+          .catch(() => {})
+          .finally(() => { _autoConnectLock = false })
       }
     }
   } catch {
   } finally {
     _loading = false
     _fetchLock = false
+    _initialFetchDone = true
     notify()
   }
 }
@@ -77,7 +76,6 @@ export function useTokens() {
 
   useEffect(() => {
     if (!_initialFetchDone) {
-      _initialFetchDone = true
       _fetchTokens()
     }
   }, [])

@@ -100,7 +100,6 @@ async function getTheme() {
 
 export async function initRPC(): Promise<boolean> {
   const settings = storage.getSettings()
-  if (settings.rpc.desativado) return false
 
   try {
     const appId = settings.rpc.applicationId || DEFAULT_APP_ID

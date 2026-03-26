@@ -38,18 +38,17 @@ router.get('/status', (_req, res) => {
  * @returns {Object} Estado ativo/inativo do RPC
  */
 router.post('/toggle', async (_req, res) => {
-  const settings = storage.getSettings()
-  const wasDisabled = settings.rpc.desativado
-
-  if (wasDisabled) {
+  if (isRPCActive()) {
+    await destroyRPC()
+    const settings = storage.getSettings()
+    storage.saveSettings({ rpc: { ...settings.rpc, desativado: true } })
+    res.json({ success: true, data: { active: false }, timestamp: new Date().toISOString() })
+  } else {
+    const settings = storage.getSettings()
     storage.saveSettings({ rpc: { ...settings.rpc, desativado: false } })
     const ok = await initRPC()
     if (ok) await updatePresence()
     res.json({ success: true, data: { active: ok }, timestamp: new Date().toISOString() })
-  } else {
-    await destroyRPC()
-    storage.saveSettings({ rpc: { ...settings.rpc, desativado: true } })
-    res.json({ success: true, data: { active: false }, timestamp: new Date().toISOString() })
   }
 })
 
