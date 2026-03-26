@@ -14,7 +14,7 @@ const prefixCommandsSchema = z.object({
 
 router.post('/prefix-commands', validate(prefixCommandsSchema), asyncHandler(async (req, res) => {
   if (req.body.action !== 'status') {
-    requireConnected(req.body.tokenId)
+    await requireConnected(req.body.tokenId)
   }
   const result = await prefixCommands(req.body)
   res.status(201).json({ success: true, data: result, timestamp: new Date().toISOString() })

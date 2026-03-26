@@ -32,7 +32,7 @@ const callUtilsSchema = z.object({
 })
 
 router.post('/call-utils', validate(callUtilsSchema), asyncHandler(async (req, res) => {
-  requireConnected(req.body.tokenId)
+  await requireConnected(req.body.tokenId)
   const result = await callUtils(req.body)
   res.status(201).json({ success: true, data: result, timestamp: new Date().toISOString() })
 }))

@@ -15,7 +15,7 @@ const limparDmsAbertasSchema = z.object({
 })
 
 router.post('/limpar-dms-abertas', validate(limparDmsAbertasSchema), asyncHandler(async (req, res) => {
-  requireConnected(req.body.tokenId)
+  await requireConnected(req.body.tokenId)
   const result = await limparDmsAbertas(req.body)
   res.status(201).json({ success: true, data: result, timestamp: new Date().toISOString() })
 }))

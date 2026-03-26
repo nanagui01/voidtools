@@ -13,7 +13,7 @@ const backupSchema = z.object({
 })
 
 router.post('/backup', validate(backupSchema), asyncHandler(async (req, res) => {
-  requireConnected(req.body.tokenId)
+  await requireConnected(req.body.tokenId)
   const result = await criarBackup(req.body)
   res.status(201).json({ success: true, data: result, timestamp: new Date().toISOString() })
 }))

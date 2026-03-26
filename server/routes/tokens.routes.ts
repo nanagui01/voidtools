@@ -537,8 +537,8 @@ router.delete('/:id', async (req, res) => {
 })
 
 /**
- * Troca a token selecionada e reconecta o client Discord
- * @returns {Object} Dados da nova token selecionada
+ * Troca a conta: desconecta a atual e conecta na nova
+ * @returns {Object} Dados da nova conta conectada
  */
 router.post('/:id/switch', async (_req, res) => {
   const token = storage.getTokenById(_req.params.id)
@@ -551,28 +551,38 @@ router.post('/:id/switch', async (_req, res) => {
     return
   }
 
-  discord.setSelectedTokenId(token.id)
-
-  const needsReconnect = discord.getActiveToken() !== token.token || !discord.isConnected()
-
-  if (needsReconnect) {
-    try {
-      await discord.connect(token.token)
-    } catch (err) {
-      logger.warn('Tokens', `POST /switch userId=${token.user?.id} falha ao reconectar: ${err}`)
-    }
+  try {
+    await discord.disconnect()
+    await discord.connect(token.token)
+    discord.setSelectedTokenId(token.id)
+  } catch (err) {
+    logger.error('Tokens', `POST /switch userId=${token.user?.id} falha ao conectar: ${err}`)
+    res.status(500).json({
+      success: false,
+      error: `Falha ao conectar: ${err instanceof Error ? err.message : err}`,
+      timestamp: new Date().toISOString(),
+    })
+    return
   }
 
   const badges = (token as any).profileData?.badges || (token as any).badges || []
-  const clientConnected = discord.getActiveToken() === token.token && discord.isConnected()
 
-  logger.info('Tokens', `POST /switch userId=${token.user?.id} clientConnected=${clientConnected}`)
+  logger.info('Tokens', `POST /switch conectado como userId=${token.user?.id}`)
+
+  if (isRPCActive()) {
+    const page = getLastPagePresence()
+    if (page) {
+      updatePresence({ details: page.details, state: page.state }).catch(() => {})
+    } else {
+      updatePresence().catch(() => {})
+    }
+  }
 
   res.json({
     success: true,
     data: {
       connected: true,
-      clientConnected,
+      clientConnected: true,
       tokenId: token.id,
       user: token.user,
       avatarUrl: getAvatarUrl(token.user?.id, token.user?.avatar),

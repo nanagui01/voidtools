@@ -13,7 +13,7 @@ const analisarSchema = z.object({
 })
 
 router.post('/limpar-package/analisar', validate(analisarSchema), asyncHandler(async (req, res) => {
-  requireConnected(req.body.tokenId)
+  await requireConnected(req.body.tokenId)
   const result = await analisarPackage({
     zipPath: req.body.zipPath,
     whitelist: req.body.whitelist,
@@ -32,7 +32,7 @@ const limparSchema = z.object({
 })
 
 router.post('/limpar-package', validate(limparSchema), asyncHandler(async (req, res) => {
-  requireConnected(req.body.tokenId)
+  await requireConnected(req.body.tokenId)
   const result = await limparPackage(req.body)
   res.status(201).json({ success: true, data: result, timestamp: new Date().toISOString() })
 }))

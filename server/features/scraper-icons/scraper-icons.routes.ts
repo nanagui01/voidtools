@@ -18,7 +18,7 @@ const scraperIconsSchema = z.object({
 })
 
 router.post('/scraper-icons', validate(scraperIconsSchema), asyncHandler(async (req, res) => {
-  requireConnected(req.body.tokenId)
+  await requireConnected(req.body.tokenId)
   const result = await scraperIcons(req.body)
   res.status(201).json({ success: true, data: result, timestamp: new Date().toISOString() })
 }))
