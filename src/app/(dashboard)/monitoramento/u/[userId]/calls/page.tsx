@@ -277,9 +277,58 @@ export default function CallsPage() {
   })
 
   useWSEvent<VoiceEvent>("monitoring:voice_event", (event) => {
-    if (event.userId === userId || sessions.some(s => s.active && s.participants.some(p => p.userId === event.userId))) {
-      fetchData()
-    }
+    setSessions(prev => prev.map(s => {
+      if (!s.active) return s
+
+      const isMonitoredUser = event.userId === userId
+      const isParticipant = s.participants.some(p => p.userId === event.userId)
+      const isInSameChannel = s.channelId === event.channelId
+
+      if (!isMonitoredUser && !isParticipant && !isInSameChannel) return s
+
+      const now = event.timestamp
+      const updatedEvents = [...s.events, event]
+      let updatedParticipants = [...s.participants]
+
+      if (event.type === "join" && event.userId !== userId && isInSameChannel) {
+        const existing = updatedParticipants.find(p => p.userId === event.userId)
+        if (existing) {
+          updatedParticipants = updatedParticipants.map(p =>
+            p.userId === event.userId
+              ? { ...p, joinedAt: now, leftAt: undefined, events: [...p.events, event] }
+              : p
+          )
+        } else {
+          updatedParticipants.push({
+            userId: event.userId,
+            username: event.username,
+            avatar: null,
+            joinedAt: now,
+            totalTime: 0,
+            events: [event],
+          })
+        }
+      } else if (event.type === "leave" && event.userId !== userId && isParticipant) {
+        updatedParticipants = updatedParticipants.map(p =>
+          p.userId === event.userId && !p.leftAt
+            ? { ...p, leftAt: now, totalTime: p.totalTime + (Date.now() - new Date(p.joinedAt).getTime()), events: [...p.events, event] }
+            : p
+        )
+      } else if (isParticipant) {
+        updatedParticipants = updatedParticipants.map(p =>
+          p.userId === event.userId
+            ? { ...p, events: [...p.events, event] }
+            : p
+        )
+      }
+
+      return {
+        ...s,
+        events: updatedEvents,
+        participants: updatedParticipants,
+        totalDuration: Date.now() - new Date(s.startedAt).getTime(),
+      }
+    }))
   })
 
   if (loading) {

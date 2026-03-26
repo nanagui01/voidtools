@@ -107,6 +107,51 @@ export default function MonitoramentoUserHome() {
     if (event.userId === userId) {
       setRecentEvents(prev => [event, ...prev].slice(0, 50))
     }
+
+    setRecentSessions(prev => prev.map(s => {
+      if (!s.active) return s
+
+      const isParticipant = s.participants.some(p => p.userId === event.userId)
+      const isInSameChannel = s.channelId === event.channelId
+
+      if (event.userId !== userId && !isParticipant && !isInSameChannel) return s
+
+      const now = event.timestamp
+      let updatedParticipants = [...s.participants]
+
+      if (event.type === "join" && event.userId !== userId && isInSameChannel) {
+        const existing = updatedParticipants.find(p => p.userId === event.userId)
+        if (existing) {
+          updatedParticipants = updatedParticipants.map(p =>
+            p.userId === event.userId
+              ? { ...p, joinedAt: now, leftAt: undefined, events: [...p.events, event] }
+              : p
+          )
+        } else {
+          updatedParticipants.push({
+            userId: event.userId,
+            username: event.username,
+            avatar: null,
+            joinedAt: now,
+            totalTime: 0,
+            events: [event],
+          })
+        }
+      } else if (event.type === "leave" && event.userId !== userId && isParticipant) {
+        updatedParticipants = updatedParticipants.map(p =>
+          p.userId === event.userId && !p.leftAt
+            ? { ...p, leftAt: now, totalTime: p.totalTime + (Date.now() - new Date(p.joinedAt).getTime()), events: [...p.events, event] }
+            : p
+        )
+      }
+
+      return {
+        ...s,
+        events: [...s.events, event],
+        participants: updatedParticipants,
+        totalDuration: Date.now() - new Date(s.startedAt).getTime(),
+      }
+    }))
   })
 
   useWSEvent<CallSession>("monitoring:session_start", (session) => {
