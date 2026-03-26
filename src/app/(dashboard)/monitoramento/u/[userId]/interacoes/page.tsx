@@ -97,7 +97,7 @@ export default function InteracoesPage() {
   )
 
   const weeklyChart = useMemo(() => {
-    const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "SÃ¡b"]
+    const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
     return dailyStats.map(d => ({
       day: weekDays[new Date(d.date).getDay()],
       minutos: Math.round(d.totalTime / 60000),
@@ -119,11 +119,11 @@ export default function InteracoesPage() {
   }
 
   const statCards = [
-    { icon: <Users size={16} />, label: "Pessoas Ãšnicas", value: stats?.uniqueParticipants || 0, color: "text-pink-400", bg: "bg-pink-500/10" },
+    { icon: <Users size={16} />, label: "Pessoas Únicas", value: stats?.uniqueParticipants || 0, color: "text-pink-400", bg: "bg-pink-500/10" },
     { icon: <MessageSquare size={16} />, label: "Total Mensagens", value: stats?.totalMessages || 0, color: "text-blue-400", bg: "bg-blue-500/10" },
     { icon: <Clock size={16} />, label: "Tempo em Call", value: formatDuration(stats?.totalCallTime || 0), color: "text-emerald-400", bg: "bg-emerald-500/10" },
     { icon: <Server size={16} />, label: "Servidores", value: stats?.totalServers || 0, color: "text-violet-400", bg: "bg-violet-500/10" },
-    { icon: <AtSign size={16} />, label: "MenÃ§Ãµes", value: totalMentions, color: "text-amber-400", bg: "bg-amber-500/10" },
+    { icon: <AtSign size={16} />, label: "Menções", value: totalMentions, color: "text-amber-400", bg: "bg-amber-500/10" },
     { icon: <Hash size={16} />, label: "Canais Ativos", value: channels.length, color: "text-cyan-400", bg: "bg-cyan-500/10" },
   ]
 
@@ -213,7 +213,7 @@ export default function InteracoesPage() {
           <div className="px-4 py-3 border-b border-border/20 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Trophy size={14} className="text-amber-400" />
-              <h2 className="text-sm font-semibold">Top InteraÃ§Ãµes</h2>
+              <h2 className="text-sm font-semibold">Top Interações</h2>
             </div>
             <div className="flex items-center gap-0.5 rounded-lg border border-border/40 p-0.5">
               <button

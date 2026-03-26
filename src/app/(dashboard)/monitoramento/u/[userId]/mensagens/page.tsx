@@ -225,7 +225,7 @@ export default function MensagensPage() {
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <Mic size={12} className="text-cyan-400" />
                         <span className="text-[11px] text-cyan-400 font-medium">
-                          Mensagem de voz{msg.voiceDuration ? ` Â· ${msg.voiceDuration}s` : ""}
+                          Mensagem de voz{msg.voiceDuration ? ` · ${msg.voiceDuration}s` : ""}
                         </span>
                       </div>
                     )}

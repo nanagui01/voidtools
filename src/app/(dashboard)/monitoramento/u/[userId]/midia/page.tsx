@@ -102,8 +102,8 @@ export default function MidiaPage() {
 
   const pieData = useMemo(() => [
     { name: "Imagens", value: images.length },
-    { name: "VÃ­deos", value: videos.length },
-    { name: "Ãudios", value: audios.length },
+    { name: "Vídeos", value: videos.length },
+    { name: "Áudios", value: audios.length },
     { name: "Docs", value: docs.length },
   ].filter(d => d.value > 0), [images, videos, audios, docs])
 
@@ -118,8 +118,8 @@ export default function MidiaPage() {
   const stats = [
     { icon: <ImageIcon size={16} />, label: "Total", value: media.length, color: "text-cyan-400", bg: "bg-cyan-500/10" },
     { icon: <ImageIcon size={16} />, label: "Imagens", value: images.length, color: "text-blue-400", bg: "bg-blue-500/10" },
-    { icon: <Video size={16} />, label: "VÃ­deos", value: videos.length, color: "text-violet-400", bg: "bg-violet-500/10" },
-    { icon: <Headphones size={16} />, label: "Ãudios", value: audios.length, color: "text-amber-400", bg: "bg-amber-500/10" },
+{ icon: <Video size={16} />, label: "Vídeos", value: videos.length, color: "text-violet-400", bg: "bg-violet-500/10" },
+    { icon: <Headphones size={16} />, label: "Áudios", value: audios.length, color: "text-amber-400", bg: "bg-amber-500/10" },
     { icon: <HardDrive size={16} />, label: "Tamanho Total", value: formatSize(totalSize), color: "text-emerald-400", bg: "bg-emerald-500/10" },
     { icon: <Calendar size={16} />, label: "Hoje", value: todayCount, color: "text-pink-400", bg: "bg-pink-500/10" },
   ]
@@ -134,8 +134,8 @@ export default function MidiaPage() {
   const filters = [
     { label: "Todos", value: null },
     { label: "Imagens", value: "image" },
-    { label: "VÃ­deos", value: "video" },
-    { label: "Ãudios", value: "audio" },
+    { label: "Vídeos", value: "video" },
+    { label: "Áudios", value: "audio" },
     { label: "Docs", value: "document" },
   ]
 
@@ -186,7 +186,7 @@ export default function MidiaPage() {
         <div className="relative flex-1 max-w-sm">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Buscar mÃ­dia..."
+            placeholder="Buscar mídia..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9 bg-card/50 border-border/40 h-9 text-sm"
@@ -225,7 +225,7 @@ export default function MidiaPage() {
 
       {filtered.length === 0 ? (
         <div className="rounded-xl border border-border/40 bg-card/50 p-12 text-center">
-          <p className="text-sm text-muted-foreground">Nenhuma mÃ­dia encontrada</p>
+          <p className="text-sm text-muted-foreground">Nenhuma mídia encontrada</p>
         </div>
       ) : viewMode === "grid" ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
@@ -262,7 +262,7 @@ export default function MidiaPage() {
                 <p className="text-[11px] font-medium truncate">{item.attachment.filename}</p>
                 <div className="flex items-center gap-1 mt-0.5">
                   <span className="text-[10px] text-muted-foreground">{formatSize(item.attachment.size)}</span>
-                  <span className="text-[10px] text-muted-foreground">Â·</span>
+                  <span className="text-[10px] text-muted-foreground">·</span>
                   <span className="text-[10px] text-muted-foreground">{formatDate(item.timestamp)}</span>
                 </div>
                 <div className="flex items-center gap-1 mt-0.5">
@@ -314,10 +314,10 @@ export default function MidiaPage() {
                 <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                   <Hash size={9} />
                   <span>{item.channelName}</span>
-                  <span>Â·</span>
+                  <span>·</span>
                   {item.guildIcon ? <img src={item.guildIcon} alt="" className="w-3.5 h-3.5 rounded-full" /> : <Server size={9} />}
                   <span className="truncate">{item.guildName}</span>
-                  <span>Â·</span>
+                  <span>·</span>
                   <span>{formatSize(item.attachment.size)}</span>
                 </div>
               </div>

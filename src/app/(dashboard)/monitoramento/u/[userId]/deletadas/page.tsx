@@ -166,8 +166,8 @@ export default function DeletadasPage() {
     { icon: <Trash2 size={16} />, label: "Deletadas", value: messages.length, color: "text-red-400", bg: "bg-red-500/10" },
     { icon: <Calendar size={16} />, label: "Hoje", value: todayCount, color: "text-emerald-400", bg: "bg-emerald-500/10" },
     { icon: <AlertTriangle size={16} />, label: "Semana", value: weekCount, color: "text-amber-400", bg: "bg-amber-500/10" },
-    { icon: <Clock size={16} />, label: "Tempo MÃ©dio", value: formatAvgTime(avgDeleteTime), color: "text-violet-400", bg: "bg-violet-500/10" },
-    { icon: <Zap size={16} />, label: "Mais RÃ¡pida", value: fastestDelete ? formatAvgTime(fastestDelete.diff) : "â€”", color: "text-cyan-400", bg: "bg-cyan-500/10" },
+    { icon: <Clock size={16} />, label: "Tempo Médio", value: formatAvgTime(avgDeleteTime), color: "text-violet-400", bg: "bg-violet-500/10" },
+{ icon: <Zap size={16} />, label: "Mais Rápida", value: fastestDelete ? formatAvgTime(fastestDelete.diff) : "—", color: "text-cyan-400", bg: "bg-cyan-500/10" },
     { icon: <Paperclip size={16} />, label: "Com Anexos", value: withAttachments, color: "text-pink-400", bg: "bg-pink-500/10" },
   ]
 
@@ -191,7 +191,7 @@ export default function DeletadasPage() {
         <div className="rounded-xl border border-border/40 bg-card/50">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border/20">
             <BarChart3 size={14} className="text-red-400" />
-            <h3 className="text-sm font-semibold">PadrÃ£o de DeleÃ§Ã£o (por hora)</h3>
+            <h3 className="text-sm font-semibold">Padrão de Deleção (por hora)</h3>
           </div>
           <div className="p-4">
             <ResponsiveContainer width="100%" height={140}>

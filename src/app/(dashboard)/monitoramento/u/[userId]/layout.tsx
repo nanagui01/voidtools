@@ -15,7 +15,8 @@ import {
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { api } from "@/lib/api-client"
-import type { MonitoredUser } from "@/types/monitoring"
+import { useWSEvent } from "@/hooks/use-websocket"
+import type { MonitoredUser, VoiceEvent } from "@/types/monitoring"
 
 interface NavItem {
   label: string
@@ -58,6 +59,30 @@ export default function MonitoramentoUserLayout() {
   }, [userId])
 
   useEffect(() => { fetchUser() }, [fetchUser])
+
+  useWSEvent<VoiceEvent>("monitoring:voice_event", (event) => {
+    if (event.userId !== userId) return
+    setUser(prev => {
+      if (!prev) return prev
+      if (event.type === "join" || event.type === "move") {
+        return {
+          ...prev,
+          isOnline: true,
+          currentVoiceChannel: {
+            channelId: event.channelId,
+            channelName: event.channelName,
+            guildId: event.guildId,
+            guildName: event.guildName,
+            guildIcon: event.guildIcon,
+          },
+        }
+      }
+      if (event.type === "leave") {
+        return { ...prev, isOnline: false, currentVoiceChannel: null }
+      }
+      return prev
+    })
+  })
 
   if (loading) {
     return (

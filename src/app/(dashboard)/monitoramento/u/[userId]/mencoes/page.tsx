@@ -110,12 +110,12 @@ export default function MencoesPage() {
   const uniqueChannels = new Set(mentions.map(m => m.channelId)).size
 
   const stats = [
-    { icon: <AtSign size={16} />, label: "MenÃ§Ãµes", value: mentions.length, color: "text-amber-400", bg: "bg-amber-500/10" },
+    { icon: <AtSign size={16} />, label: "Menções", value: mentions.length, color: "text-amber-400", bg: "bg-amber-500/10" },
     { icon: <Calendar size={16} />, label: "Hoje", value: todayCount, color: "text-emerald-400", bg: "bg-emerald-500/10" },
     { icon: <UserIcon size={16} />, label: "Pessoas", value: uniqueMentioners, color: "text-blue-400", bg: "bg-blue-500/10" },
     { icon: <Server size={16} />, label: "Servidores", value: uniqueServers, color: "text-violet-400", bg: "bg-violet-500/10" },
     { icon: <Hash size={16} />, label: "Canais", value: uniqueChannels, color: "text-cyan-400", bg: "bg-cyan-500/10" },
-    { icon: <Crown size={16} />, label: "Top Mencionador", value: topMentioners[0]?.username || "â€”", color: "text-pink-400", bg: "bg-pink-500/10" },
+    { icon: <Crown size={16} />, label: "Top Mencionador", value: topMentioners[0]?.username || "—", color: "text-pink-400", bg: "bg-pink-500/10" },
   ]
 
   return (
@@ -138,7 +138,7 @@ export default function MencoesPage() {
         <div className="rounded-xl border border-border/40 bg-card/50 lg:col-span-2">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border/20">
             <BarChart3 size={14} className="text-amber-400" />
-            <h3 className="text-sm font-semibold">MenÃ§Ãµes por Hora</h3>
+            <h3 className="text-sm font-semibold">Menções por Hora</h3>
           </div>
           <div className="p-4">
             <ResponsiveContainer width="100%" height={150}>
@@ -147,7 +147,7 @@ export default function MencoesPage() {
                 <YAxis tick={{ fontSize: 9, fill: "#888" }} allowDecimals={false} width={25} />
                 <Tooltip
                   contentStyle={{ background: "#1a1a2e", border: "1px solid #333", borderRadius: 8, fontSize: 12 }}
-                  formatter={(value: number) => [`${value}`, "MenÃ§Ãµes"]}
+                  formatter={(value: number) => [`${value}`, "Menções"]}
                 />
                 <Bar dataKey="mencoes" fill="#f59e0b" radius={[3, 3, 0, 0]} />
               </BarChart>
@@ -190,7 +190,7 @@ export default function MencoesPage() {
         <div className="rounded-xl border border-border/40 bg-card/50">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border/20">
             <Server size={14} className="text-violet-400" />
-            <h3 className="text-sm font-semibold">MenÃ§Ãµes por Servidor</h3>
+            <h3 className="text-sm font-semibold">Menções por Servidor</h3>
           </div>
           <div className="p-3 flex flex-wrap gap-2">
             {serverMentions.map((srv) => (
@@ -211,7 +211,7 @@ export default function MencoesPage() {
       <div className="relative max-w-sm">
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Buscar menÃ§Ãµes..."
+          placeholder="Buscar menções..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-9 bg-card/50 border-border/40 h-9 text-sm"
@@ -220,7 +220,7 @@ export default function MencoesPage() {
 
       <div className="rounded-xl border border-border/40 bg-card/50">
         {filtered.length === 0 ? (
-          <p className="text-sm text-muted-foreground p-8 text-center">Nenhuma menÃ§Ã£o encontrada</p>
+          <p className="text-sm text-muted-foreground p-8 text-center">Nenhuma menção encontrada</p>
         ) : (
           <div className="divide-y divide-border/20">
             {filtered.map((msg) => (

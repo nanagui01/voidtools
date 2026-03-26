@@ -80,8 +80,8 @@ const EVENT_VISUALS: Record<VoiceEventType, EventVisual> = {
   unmute:        { icon: <Mic size={13} />,           label: "Desmutou o microfone",   color: "text-emerald-400", bg: "bg-emerald-500/15" },
   deaf:          { icon: <VolumeX size={13} />,       label: "Ensurdeceu",             color: "text-orange-400",  bg: "bg-orange-500/15" },
   undeaf:        { icon: <Volume2 size={13} />,       label: "Desensurdeceu",          color: "text-emerald-400", bg: "bg-emerald-500/15" },
-  camera_on:     { icon: <Video size={13} />,         label: "Ligou a cÃ¢mera",         color: "text-violet-400",  bg: "bg-violet-500/15" },
-  camera_off:    { icon: <VideoOff size={13} />,      label: "Desligou a cÃ¢mera",      color: "text-zinc-400",    bg: "bg-zinc-500/15" },
+  camera_on:     { icon: <Video size={13} />,         label: "Ligou a câmera",         color: "text-violet-400",  bg: "bg-violet-500/15" },
+  camera_off:    { icon: <VideoOff size={13} />,      label: "Desligou a câmera",      color: "text-zinc-400",    bg: "bg-zinc-500/15" },
   screen_on:     { icon: <Monitor size={13} />,       label: "Compartilhou a tela",    color: "text-cyan-400",    bg: "bg-cyan-500/15" },
   screen_off:    { icon: <MonitorOff size={13} />,    label: "Parou de compartilhar",  color: "text-zinc-400",    bg: "bg-zinc-500/15" },
   server_mute:   { icon: <ShieldAlert size={13} />,   label: "Mutado pelo servidor",   color: "text-red-400",     bg: "bg-red-500/15" },
@@ -213,7 +213,7 @@ function ParticipantCard({ participant }: { participant: CallParticipant }) {
         </span>
         {participant.leftAt && (
           <>
-            <span className="text-muted-foreground/30">â†’</span>
+            <span className="text-muted-foreground/30">—</span>
             <span className="flex items-center gap-1">
               <PhoneOff size={9} className="text-red-400" />
               {formatTime(participant.leftAt)}
@@ -361,10 +361,10 @@ export default function CallsPage() {
   const stats = [
     { icon: <Phone size={16} />,       label: "Total de Calls",   value: totalCalls,               color: "text-emerald-400", bg: "bg-emerald-500/10" },
     { icon: <Clock size={16} />,       label: "Tempo Total",      value: formatDuration(totalTime), color: "text-blue-400",    bg: "bg-blue-500/10" },
-    { icon: <TrendingUp size={16} />,  label: "MÃ©dia por Call",   value: formatDuration(avgDuration), color: "text-violet-400", bg: "bg-violet-500/10" },
+    { icon: <TrendingUp size={16} />,  label: "Média por Call",   value: formatDuration(avgDuration), color: "text-violet-400", bg: "bg-violet-500/10" },
     { icon: <Users size={16} />,       label: "Participantes",    value: uniqueParticipants,        color: "text-amber-400",   bg: "bg-amber-500/10" },
     { icon: <MicOff size={16} />,      label: "Vezes Mutou",      value: totalMutes,                color: "text-orange-400",  bg: "bg-orange-500/10" },
-    { icon: <Video size={16} />,       label: "Ligou CÃ¢mera",     value: totalCamOn,                color: "text-violet-400",  bg: "bg-violet-500/10" },
+    { icon: <Video size={16} />,       label: "Ligou Câmera",     value: totalCamOn,                color: "text-violet-400",  bg: "bg-violet-500/10" },
     { icon: <Monitor size={16} />,     label: "Compartilhou Tela", value: totalScreenOn,            color: "text-cyan-400",    bg: "bg-cyan-500/10" },
     { icon: <Activity size={16} />,    label: "Total Eventos",    value: allEvents.length,          color: "text-pink-400",    bg: "bg-pink-500/10" },
   ]
@@ -375,7 +375,7 @@ export default function CallsPage() {
         <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 overflow-hidden">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-emerald-500/20">
             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <h3 className="text-sm font-semibold text-emerald-400">SessÃµes Ativas Agora</h3>
+            <h3 className="text-sm font-semibold text-emerald-400">Sessões Ativas Agora</h3>
             <span className="text-[10px] text-emerald-400/60 ml-auto">{activeSessions.length} ao vivo</span>
           </div>
           {activeSessions.map(session => (
@@ -390,9 +390,9 @@ export default function CallsPage() {
                   <div className="flex items-center gap-2 mt-1">
                     {session.guildIcon ? <img src={session.guildIcon} alt="" className="w-4 h-4 rounded-full" /> : <Server size={12} className="text-muted-foreground" />}
                     <span className="text-xs text-muted-foreground">{session.guildName}</span>
-                    <span className="text-muted-foreground/30">Â·</span>
-                    <span className="text-xs text-muted-foreground">InÃ­cio: {formatTime(session.startedAt)}</span>
-                    <span className="text-muted-foreground/30">Â·</span>
+                    <span className="text-muted-foreground/30">·</span>
+                    <span className="text-xs text-muted-foreground">Início: {formatTime(session.startedAt)}</span>
+                    <span className="text-muted-foreground/30">·</span>
                     <span className="text-xs font-mono font-semibold text-emerald-400">{formatDuration(session.totalDuration)}</span>
                   </div>
                 </div>
@@ -529,7 +529,7 @@ export default function CallsPage() {
                       <p className="text-sm font-medium truncate">{p.globalName || p.username}</p>
                       <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                         <span>{p.count} calls</span>
-                        <span className="text-muted-foreground/30">Â·</span>
+                        <span className="text-muted-foreground/30">·</span>
                         <span className="font-mono opacity-0 group-hover:opacity-100 transition-opacity">{p.userId}</span>
                       </div>
                     </div>
@@ -546,7 +546,7 @@ export default function CallsPage() {
             <div className="rounded-xl border border-border/40 bg-card/50 p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Trophy size={14} className="text-violet-400" />
-                <h3 className="text-sm font-semibold">SessÃ£o Mais Longa</h3>
+                <h3 className="text-sm font-semibold">Sessão Mais Longa</h3>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex-1">
@@ -554,11 +554,11 @@ export default function CallsPage() {
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                     <Hash size={10} />
                     <span>{longestSession.channelName}</span>
-                    <span className="text-muted-foreground/30">Â·</span>
+                    <span className="text-muted-foreground/30">·</span>
                     {longestSession.guildIcon ? <img src={longestSession.guildIcon} alt="" className="w-3.5 h-3.5 rounded-full" /> : <Server size={10} />}
                     <span>{longestSession.guildName}</span>
                   </div>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{formatDate(longestSession.startedAt)} â€” {longestSession.participants.length} participante(s)</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{formatDate(longestSession.startedAt)} — {longestSession.participants.length} participante(s)</p>
                 </div>
                 <div className="flex -space-x-2">
                   {longestSession.participants.slice(0, 5).map(p => (
@@ -601,8 +601,8 @@ export default function CallsPage() {
       <div className="rounded-xl border border-border/40 bg-card/50">
         <div className="flex items-center gap-2 px-4 py-3 border-b border-border/20">
           <Clock size={14} className="text-blue-400" />
-          <h3 className="text-sm font-semibold">HistÃ³rico de SessÃµes</h3>
-          <span className="text-[10px] text-muted-foreground ml-auto">{completedSessions.length} sessÃµes</span>
+          <h3 className="text-sm font-semibold">Histórico de Sessões</h3>
+          <span className="text-[10px] text-muted-foreground ml-auto">{completedSessions.length} sessões</span>
         </div>
         <div className="divide-y divide-border/20">
           {completedSessions.length === 0 ? (
@@ -647,10 +647,10 @@ export default function CallsPage() {
                       <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mt-0.5">
                         {session.guildIcon ? <img src={session.guildIcon} alt="" className="w-3.5 h-3.5 rounded-full" /> : <Server size={10} />}
                         <span className="truncate">{session.guildName}</span>
-                        <span className="text-muted-foreground/40">Â·</span>
+                        <span className="text-muted-foreground/40">·</span>
                         <Users size={10} className="shrink-0" />
                         <span>{session.participants.length}</span>
-                        <span className="text-muted-foreground/40">Â·</span>
+                        <span className="text-muted-foreground/40">·</span>
                         <Activity size={10} className="shrink-0" />
                         <span>{session.events.length}</span>
                       </div>
@@ -678,15 +678,15 @@ export default function CallsPage() {
 
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4 pt-2">
                         <div className="rounded-lg bg-background/50 border border-border/20 p-2 text-center">
-                          <p className="text-xs text-muted-foreground">InÃ­cio</p>
+                          <p className="text-xs text-muted-foreground">Início</p>
                           <p className="text-sm font-mono font-semibold">{formatTime(session.startedAt)}</p>
                         </div>
                         <div className="rounded-lg bg-background/50 border border-border/20 p-2 text-center">
                           <p className="text-xs text-muted-foreground">Fim</p>
-                          <p className="text-sm font-mono font-semibold">{session.endedAt ? formatTime(session.endedAt) : "â€”"}</p>
+                          <p className="text-sm font-mono font-semibold">{session.endedAt ? formatTime(session.endedAt) : "—"}</p>
                         </div>
                         <div className="rounded-lg bg-background/50 border border-border/20 p-2 text-center">
-                          <p className="text-xs text-muted-foreground">DuraÃ§Ã£o</p>
+                          <p className="text-xs text-muted-foreground">Duração</p>
                           <p className="text-sm font-mono font-semibold">{formatDuration(session.totalDuration)}</p>
                         </div>
                         <div className="rounded-lg bg-background/50 border border-border/20 p-2 text-center">
