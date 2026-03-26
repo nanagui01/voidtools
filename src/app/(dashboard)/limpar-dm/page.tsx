@@ -92,6 +92,29 @@ export default function PaginaLimparDm() {
   const [cleanupHistory, setCleanupHistory] = useState<CleanupRecord[]>([])
 
   useEffect(() => {
+    api.getRunningTasks().then((res) => {
+      const tasks = (res.data || []) as Array<{
+        id: string; tool: string; status: string; progress: number; total: number;
+        phase?: string; config: Record<string, unknown>; startedAt?: string; lastMessage?: string
+      }>
+      const running = tasks.find((t) => t.tool === "limpar-dm" && (t.status === "running" || t.status === "paused"))
+      if (running) {
+        setTaskId(running.id)
+        setProgress(running.progress)
+        setTotal(running.total)
+        setUsername((running.config.username as string) || "")
+        setAvatarUrl((running.config.avatarUrl as string) || null)
+        setBadges((running.config.badges as Badge[]) || [])
+        if (running.lastMessage) setStatusMessage(running.lastMessage)
+        if (running.phase === "fetching" || running.phase === "deleting") setPhase(running.phase)
+        else if (running.phase === "backup" || running.phase === "backup-media" || running.phase === "backup-saving") setPhase("backup")
+        else setPhase("fetching")
+        if (running.startedAt) startTimeRef.current = new Date(running.startedAt).getTime()
+      }
+    }).catch(() => {})
+  }, [])
+
+  useEffect(() => {
     api.getAnalytics().then((res) => {
       const data = res.data as { cleanups?: CleanupRecord[] }
       if (data?.cleanups) {

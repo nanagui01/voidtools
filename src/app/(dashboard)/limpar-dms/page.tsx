@@ -45,6 +45,24 @@ export default function PaginaLimparDmsAbertas() {
   const startTimeRef = useRef<number>(0)
 
   useEffect(() => {
+    api.getRunningTasks().then((res) => {
+      const tasks = (res.data || []) as Array<{
+        id: string; tool: string; status: string; progress: number; total: number;
+        startedAt?: string; lastMessage?: string
+      }>
+      const running = tasks.find((t) => t.tool === "limpar-dms-abertas" && (t.status === "running" || t.status === "paused"))
+      if (running) {
+        setTaskId(running.id)
+        setProgress(running.progress)
+        setTotal(running.total)
+        if (running.lastMessage) setStatusMessage(running.lastMessage)
+        setPhase("running")
+        if (running.startedAt) startTimeRef.current = new Date(running.startedAt).getTime()
+      }
+    }).catch(() => {})
+  }, [])
+
+  useEffect(() => {
     api.getSettings().then((res) => {
       const data = res.data as AppSettings
       if (data?.delay) setConfigDelay(data.delay)
