@@ -359,6 +359,7 @@ async function farmarHoras(client: any, cfg: CallUtilsConfig) {
 
   const voiceListener = async (oldState: any, newState: any) => {
     if (!deveContinuar) return
+    if (!oldState.member || !newState.member) return
 
     if (oldState.member.id === client.user.id && oldState.channelId && !newState.channelId) {
       await sleep(2000)
@@ -540,6 +541,7 @@ async function coleira(client: any, cfg: CallUtilsConfig) {
 
   const voiceUpdateListener = async (oldState: any, newState: any) => {
     if (!deveContinuar) return
+    if (!oldState.member || !newState.member) return
     if (oldState.guild.id !== guild.id && newState.guild.id !== guild.id) return
 
     const idsMonitorados = membros.map((m: any) => m.id)
@@ -638,6 +640,7 @@ async function protegerUsuario(client: any, cfg: CallUtilsConfig) {
 
   const voiceUpdateListener = async (oldState: any, newState: any) => {
     if (!deveContinuar) return
+    if (!oldState.member || !newState.member) return
 
     const idsMonitorados = membros.map((m: any) => m.id)
     if (!idsMonitorados.includes(newState.member.id)) return

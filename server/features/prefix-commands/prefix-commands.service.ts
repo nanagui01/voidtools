@@ -612,6 +612,7 @@ async function protegerUsuario(client: any, userId: string, message: any, despro
         client.off('voiceStateUpdate', voiceListener)
         return
       }
+      if (!newState.member) return
       if (newState.member.id !== userId) return
       if (newState.mute) await newState.member.voice.setMute(false).catch(() => {})
       if (newState.deaf) await newState.member.voice.setDeaf(false).catch(() => {})
@@ -925,6 +926,7 @@ async function farmarHoras(client: any, idCall: string, message: any, parar: boo
 
   voiceUpdateListener = async (oldState: any, newState: any) => {
     if (!deveContinuar) return
+    if (!oldState.member) return
     if (oldState.member.id === client.user.id && oldState.channelId && !newState.channelId) {
       await sleep(2000)
       if (deveContinuar) entrarViaGateway()
