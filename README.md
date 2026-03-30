@@ -36,97 +36,103 @@ em tempo real e gerenciamento multi-conta em uma interface clean e moderna.
 
 O BrunnoClear V2 é uma aplicação desktop que centraliza **mais de 20 ferramentas** de gerenciamento de conta Discord em um único lugar. Tudo roda **100% localmente** na sua máquina — sem servidores externos, sem coleta de dados.
 
-<table>
-<tr>
-<td>🖥️ <b>100% Local</b><br><sub>Nenhum dado sai da sua máquina</sub></td>
-<td>🔄 <b>Auto-Update</b><br><sub>Atualiza sozinho a cada release</sub></td>
-<td>👥 <b>Multi-Conta</b><br><sub>Gerencie várias contas ao mesmo tempo</sub></td>
-<td>📡 <b>Tempo Real</b><br><sub>WebSocket para feedback instantâneo</sub></td>
-</tr>
-</table>
+- 🖥️ **100% Local** — Nenhum dado sai da sua máquina
+- 🔄 **Auto-Update** — Atualiza sozinho a cada release
+- 👥 **Multi-Conta** — Gerencie várias contas ao mesmo tempo
+- 📡 **Tempo Real** — WebSocket para feedback instantâneo
 
 <br>
 
 ## 🧰 Ferramentas
 
-<table>
-<tr>
-<td width="50%" valign="top">
+> **+20 ferramentas** organizadas em 6 categorias — tudo acessível pelo menu lateral.
 
-### 💬 Mensagens
-| Ferramenta | O que faz |
+<details>
+<summary>&nbsp;<b>💬 Mensagens</b></summary>
+<br>
+
+| Ferramenta | Descrição |
 |:--|:--|
-| **Limpar DM** | Deleta suas mensagens de uma DM ou canal |
-| **Limpar DMs Abertas** | Limpa mensagens de todas as DMs de uma vez |
-| **Limpar Package** | Processa seu pacote de dados e deleta mensagens |
-| **Backup** | Salva mensagens com mídia, stickers e embeds |
+| `Limpar DM` | Deleta suas mensagens de uma DM ou canal |
+| `Limpar DMs Abertas` | Limpa mensagens de todas as DMs de uma vez |
+| `Limpar Package` | Processa seu pacote de dados e deleta mensagens |
+| `Backup` | Salva mensagens com mídia, stickers e embeds |
 
-### 🏠 Servidores
-| Ferramenta | O que faz |
+</details>
+
+<details>
+<summary>&nbsp;<b>🏠 Servidores</b></summary>
+<br>
+
+| Ferramenta | Descrição |
 |:--|:--|
-| **Clonar Servidor** | Copia canais, cargos, emojis e configs |
-| **Sair de Servidores** | Sai de todos os servidores em massa |
-| **Scraper de Ícones** | Coleta imagens de um canal e envia para outro |
+| `Clonar Servidor` | Copia canais, cargos, emojis e configs |
+| `Sair de Servidores` | Sai de todos os servidores em massa |
+| `Scraper de Ícones` | Coleta imagens de um canal e envia para outro |
 
-### 👤 Conta
-| Ferramenta | O que faz |
+</details>
+
+<details>
+<summary>&nbsp;<b>👤 Conta</b></summary>
+<br>
+
+| Ferramenta | Descrição |
 |:--|:--|
-| **Remover Amigos** | Remove toda a lista de amigos |
-| **Fechar DMs** | Fecha todas as DMs abertas |
-| **Scanner de Tokens** | Encontra tokens salvas no sistema |
-| **Perfil** | Visualiza badges, Nitro e contas conectadas |
+| `Remover Amigos` | Remove toda a lista de amigos |
+| `Fechar DMs` | Fecha todas as DMs abertas |
+| `Scanner de Tokens` | Encontra tokens salvas no sistema |
+| `Perfil` | Visualiza badges, Nitro e contas conectadas |
 
-</td>
-<td width="50%" valign="top">
+</details>
 
-### 📞 Calls
-| Ferramenta | O que faz |
+<details>
+<summary>&nbsp;<b>📞 Calls</b></summary>
+<br>
+
+| Ferramenta | Descrição |
 |:--|:--|
-| **Desconectar** | Remove membros de canais de voz |
-| **Mover** | Move membros entre canais |
-| **Mutar / Ensurdecer** | Muta ou ensurdece em massa |
-| **Listar** | Lista participantes de uma call |
-| **Farm Call** | Entra e permanece em call automaticamente |
+| `Desconectar` | Remove membros de canais de voz |
+| `Mover` | Move membros entre canais |
+| `Mutar / Ensurdecer` | Muta ou ensurdece em massa |
+| `Listar` | Lista participantes de uma call |
+| `Farm Call` | Entra e permanece em call automaticamente |
 
-### 📡 Monitoramento
-| Ferramenta | O que faz |
+</details>
+
+<details>
+<summary>&nbsp;<b>📡 Monitoramento</b></summary>
+<br>
+
+| Ferramenta | Descrição |
 |:--|:--|
-| **Calls** | Rastreia entrada/saída com duração |
-| **Mensagens** | Captura mensagens e menções em tempo real |
-| **Download** | Baixa automaticamente anexos monitorados |
-| **Multi-Token** | Monitora com várias contas simultâneas |
+| `Calls` | Rastreia entrada/saída com duração |
+| `Mensagens` | Captura mensagens e menções em tempo real |
+| `Download` | Baixa automaticamente anexos monitorados |
+| `Multi-Token` | Monitora com várias contas simultâneas |
 
-### 🎨 Personalização
-| Ferramenta | O que faz |
+</details>
+
+<details>
+<summary>&nbsp;<b>🎨 Personalização</b></summary>
+<br>
+
+| Ferramenta | Descrição |
 |:--|:--|
-| **Rich Presence** | Presence customizada no Discord |
-| **Temas** | Interface com temas e cores configuráveis |
-| **Prefix Commands** | Comandos por prefixo direto no chat |
-| **System Tray** | Status de tarefas na bandeja do sistema |
+| `Rich Presence` | Presence customizada no Discord |
+| `Temas` | Interface com temas e cores configuráveis |
+| `Prefix Commands` | Comandos por prefixo direto no chat |
+| `System Tray` | Status de tarefas na bandeja do sistema |
 
-</td>
-</tr>
-</table>
+</details>
 
 <br>
 
 ## 🚀 Começando
 
-<table>
-<tr>
-<td>
-
-**1.** &nbsp; Baixe o instalador na [página de releases](https://github.com/brunnoxw/BrunnoClear-V2/releases/latest)
-
-**2.** &nbsp; Execute o `.exe` — o app instala e abre automaticamente
-
-**3.** &nbsp; Adicione seu token Discord no painel de contas
-
-**4.** &nbsp; Conecte a conta e acesse as ferramentas pelo menu lateral
-
-</td>
-</tr>
-</table>
+1. Baixe o instalador na [página de releases](https://github.com/brunnoxw/BrunnoClear-V2/releases/latest)
+2. Execute o `.exe` — o app instala e abre automaticamente
+3. Adicione seu token Discord no painel de contas
+4. Conecte a conta e acesse as ferramentas pelo menu lateral
 
 > [!TIP]
 > O **Scanner de Tokens** pode encontrar automaticamente tokens salvas no seu Windows — você não precisa procurar manualmente.
