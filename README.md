@@ -27,6 +27,19 @@ em tempo real e gerenciamento multi-conta em uma interface clean e moderna.
 
 <br>
 
+> [!IMPORTANT]
+> ### 🔒 Repositório Oficial
+> Este é o **único repositório oficial** do BrunnoClear V2, desenvolvido e mantido exclusivamente por [@brunnoxw](https://github.com/brunnoxw).
+>
+> **Não me responsabilizo** por cópias, forks modificados ou versões redistribuídas por terceiros. Versões obtidas fora deste repositório podem conter código malicioso, coletar seus dados ou comprometer a segurança da sua conta.
+>
+> ✅ &nbsp; **Fonte segura:** [`github.com/brunnoxw/BrunnoClear-V2`](https://github.com/brunnoxw/BrunnoClear-V2)
+> ✅ &nbsp; **Downloads oficiais:** apenas pela [página de Releases](https://github.com/brunnoxw/BrunnoClear-V2/releases) deste repositório
+>
+> Se alguém está distribuindo o BrunnoClear por outro canal (sites, servidores do Discord, etc.), **desconfie**. Sempre verifique a origem antes de executar qualquer software no seu computador.
+
+<br>
+
 > [!CAUTION]
 > O uso de self-bots viola os [Termos de Serviço do Discord](https://discord.com/terms). Este software é fornecido apenas para fins educacionais. Use por sua conta e risco.
 
