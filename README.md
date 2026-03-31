@@ -27,16 +27,39 @@ em tempo real e gerenciamento multi-conta em uma interface clean e moderna.
 
 <br>
 
-> [!IMPORTANT]
-> ### 🔒 Repositório Oficial
-> Este é o **único repositório oficial** do BrunnoClear V2, desenvolvido e mantido exclusivamente por [@brunnoxw](https://github.com/brunnoxw).
->
-> **Não me responsabilizo** por cópias, forks modificados ou versões redistribuídas por terceiros. Versões obtidas fora deste repositório podem conter código malicioso, coletar seus dados ou comprometer a segurança da sua conta.
->
-> ✅ &nbsp; **Fonte segura:** [`github.com/brunnoxw/BrunnoClear-V2`](https://github.com/brunnoxw/BrunnoClear-V2)
-> ✅ &nbsp; **Downloads oficiais:** apenas pela [página de Releases](https://github.com/brunnoxw/BrunnoClear-V2/releases) deste repositório
->
-> Se alguém está distribuindo o BrunnoClear por outro canal (sites, servidores do Discord, etc.), **desconfie**. Sempre verifique a origem antes de executar qualquer software no seu computador.
+<div align="center">
+
+<img src="https://img.shields.io/badge/⚠️_AVISO_IMPORTANTE-LEIA_ANTES_DE_BAIXAR-FF3B3B?style=for-the-badge&labelColor=1a1a2e" alt="Aviso Importante">
+
+</div>
+
+<table>
+<tr>
+<td>
+
+### 🔐 Repositório Oficial
+
+Este é o **único repositório oficial** do BrunnoClear V2, desenvolvido e mantido exclusivamente por [**@brunnoxw**](https://github.com/brunnoxw).
+
+**Não me responsabilizo** por cópias, forks modificados ou versões redistribuídas por terceiros.  
+Versões obtidas fora deste repositório podem estar **alteradas**, conter **malware** ou **roubar suas credenciais**.
+
+<br>
+
+| | Canal Seguro |
+|:--:|:--|
+| 🔗 | **Repositório oficial:** [`github.com/brunnoxw/BrunnoClear-V2`](https://github.com/brunnoxw/BrunnoClear-V2) |
+| 📦 | **Download seguro:** [**Página de Releases**](https://github.com/brunnoxw/BrunnoClear-V2/releases) deste repositório |
+| 👤 | **Autor:** [@brunnoxw](https://github.com/brunnoxw) — único desenvolvedor e mantenedor |
+
+<br>
+
+> **Recebeu o BrunnoClear por Discord, Telegram, site aleatório ou qualquer outro meio?**  
+> 🚫 **Não execute.** Baixe **sempre** diretamente deste repositório para garantir a versão original e segura.
+
+</td>
+</tr>
+</table>
 
 <br>
 
