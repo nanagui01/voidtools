@@ -29,37 +29,30 @@ em tempo real e gerenciamento multi-conta em uma interface clean e moderna.
 
 <div align="center">
 
-<img src="https://img.shields.io/badge/⚠️_AVISO_IMPORTANTE-LEIA_ANTES_DE_BAIXAR-FF3B3B?style=for-the-badge&labelColor=1a1a2e" alt="Aviso Importante">
+```
+🔒 REPOSITÓRIO OFICIAL • BRUNNOXW
+```
+
+**Este é o único repositório oficial do BrunnoClear V2.**
+
+Desenvolvido e mantido por **[@brunnoxw](https://github.com/brunnoxw)** — qualquer versão fora daqui é **não autorizada**.
+
+---
+
+⛔ **Não me responsabilizo por cópias ou versões redistribuídas por terceiros.**
+Arquivos de outras fontes podem conter **malware**, roubar **tokens** ou comprometer sua **segurança**.
+
+**Baixe apenas dos canais oficiais:**
+
+[![Repositório](https://img.shields.io/badge/GitHub-brunnoxw%2FBrunnoClear--V2-181717?style=flat-square&logo=github)](https://github.com/brunnoxw/BrunnoClear-V2)
+&nbsp;
+[![Releases](https://img.shields.io/badge/Download-Releases_Oficiais-5865F2?style=flat-square&logo=windows)](https://github.com/brunnoxw/BrunnoClear-V2/releases)
+
+<sub>Recebeu por Discord, Telegram ou qualquer outro meio? <b>Não execute.</b> Baixe sempre daqui.</sub>
+
+---
 
 </div>
-
-<table>
-<tr>
-<td>
-
-### 🔐 Repositório Oficial
-
-Este é o **único repositório oficial** do BrunnoClear V2, desenvolvido e mantido exclusivamente por [**@brunnoxw**](https://github.com/brunnoxw).
-
-**Não me responsabilizo** por cópias, forks modificados ou versões redistribuídas por terceiros.  
-Versões obtidas fora deste repositório podem estar **alteradas**, conter **malware** ou **roubar suas credenciais**.
-
-<br>
-
-| | Canal Seguro |
-|:--:|:--|
-| 🔗 | **Repositório oficial:** [`github.com/brunnoxw/BrunnoClear-V2`](https://github.com/brunnoxw/BrunnoClear-V2) |
-| 📦 | **Download seguro:** [**Página de Releases**](https://github.com/brunnoxw/BrunnoClear-V2/releases) deste repositório |
-| 👤 | **Autor:** [@brunnoxw](https://github.com/brunnoxw) — único desenvolvedor e mantenedor |
-
-<br>
-
-> **Recebeu o BrunnoClear por Discord, Telegram, site aleatório ou qualquer outro meio?**  
-> 🚫 **Não execute.** Baixe **sempre** diretamente deste repositório para garantir a versão original e segura.
-
-</td>
-</tr>
-</table>
 
 <br>
 
