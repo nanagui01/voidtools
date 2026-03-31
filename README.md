@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://i.imgur.com/sDMGB2X.png" alt="BrunnoClear V2" width="780">
+<img src="https://i.imgur.com/WxcqlI9.png" alt="BrunnoClear V2" width="780">
 
 <br>
 
