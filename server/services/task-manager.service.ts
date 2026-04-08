@@ -50,6 +50,7 @@ class TaskManager extends EventEmitter {
     task.progress = progress
     task.total = total
     if (phase) (task as any).phase = phase
+    if (extra) (task as any).extra = extra
 
     if (message) {
       task.results.push({

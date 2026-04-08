@@ -31,6 +31,7 @@ export type ToolType =
   | 'clonar-servidor'
   | 'scraper-icons'
   | 'fechar-dms'
+  | 'limpar-dm-amigos'
   | 'call-utils'
   | 'prefix-commands'
 
@@ -75,6 +76,14 @@ export interface LimparDmsAbertasConfig {
 export interface RemoverAmigosConfig {
   tokenId: string
   delay: number
+}
+
+export interface LimparDmAmigosConfig {
+  tokenId: string
+  delay: number
+  fazerBackup: boolean
+  salvarMidiaLocal: boolean
+  fecharApos: boolean
 }
 
 export interface RemoverServidoresConfig {

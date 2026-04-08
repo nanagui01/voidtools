@@ -3,6 +3,7 @@ import { limparDmRoutes } from './limpar-dm'
 import { backupToolRoutes } from './backup'
 import { limparPackageRoutes } from './limpar-package'
 import { limparDmsAbertasRoutes } from './limpar-dms-abertas'
+import { limparDmAmigosRoutes } from './limpar-dm-amigos'
 import { removerAmigosRoutes } from './remover-amigos'
 import { removerServidoresRoutes } from './remover-servidores'
 import { clonarServidorRoutes } from './clonar-servidor'
@@ -18,6 +19,7 @@ featureRouter.use('/', limparDmRoutes)
 featureRouter.use('/', backupToolRoutes)
 featureRouter.use('/', limparPackageRoutes)
 featureRouter.use('/', limparDmsAbertasRoutes)
+featureRouter.use('/', limparDmAmigosRoutes)
 featureRouter.use('/', removerAmigosRoutes)
 featureRouter.use('/', removerServidoresRoutes)
 featureRouter.use('/', clonarServidorRoutes)

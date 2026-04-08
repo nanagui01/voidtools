@@ -213,6 +213,7 @@ const PAGE_PRESENCE: Record<string, { details: string; state?: string }> = {
   '/': { details: 'Visão Geral', state: 'No dashboard' },
   '/analytics': { details: 'Analytics', state: 'Analisando estatísticas' },
   '/limpar-dm': { details: 'Limpar DM', state: 'Gerenciando mensagens' },
+  '/limpar-dm-amigos': { details: 'Limpar DM Amigos', state: 'Limpeza de DMs de amigos' },
   '/limpar-dms': { details: 'Limpar DMs', state: 'Limpeza em massa' },
   '/backups': { details: 'Backups', state: 'Visualizando backups' },
   '/configuracoes': { details: 'Configurações', state: 'Ajustando configurações' },
@@ -303,6 +304,19 @@ function setupTaskListeners() {
       details = `Fechando DMs ${progress}/${total} [${pct}%]`
     } else if (tool === 'remover-amigos') {
       details = `Removendo amigos ${progress}/${total} [${pct}%]`
+    } else if (tool === 'limpar-dm-amigos') {
+      const extra = (data as any).extra
+      const friendName = extra?.currentDm || ''
+      if (phase === 'backup' || phase === 'backup-media' || phase === 'backup-saving') {
+        details = `Backup DM: ${friendName}`
+        state = `Amigo ${(extra?.dmIndex ?? 0) + 1}/${extra?.totalDms ?? '?'}`
+      } else if (phase === 'fetching') {
+        details = `Buscando msgs: ${friendName}`
+        state = `Amigo ${(extra?.dmIndex ?? 0) + 1}/${extra?.totalDms ?? '?'}`
+      } else if (phase === 'deleting') {
+        details = `Apagando: ${friendName} ${progress}/${total}`
+        state = `${pct}% — Amigo ${(extra?.dmIndex ?? 0) + 1}/${extra?.totalDms ?? '?'}`
+      }
     } else if (tool === 'remover-servidores') {
       details = `Removendo servidores ${progress}/${total} [${pct}%]`
     } else if (tool === 'clonar-servidor') {

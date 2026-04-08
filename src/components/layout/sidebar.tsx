@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Link } from "react-router-dom"
 import { useLocation } from "react-router-dom"
 import {
@@ -87,6 +87,7 @@ const secoesMenu: SecaoMenu[] = [
     icone: <MessageSquare size={16} />,
     itens: [
       { titulo: "Limpar DM", icone: <Trash2 size={16} />, href: "/limpar-dm" },
+      { titulo: "Limpar DM dos Amigos", icone: <Trash2 size={16} />, href: "/limpar-dm-amigos" },
       { titulo: "Limpar DMs Abertas", icone: <Trash2 size={16} />, href: "/limpar-dms" },
       { titulo: "Limpar Package", icone: <Package size={16} />, href: "/limpar-package" },
       { titulo: "Fechar DMs", icone: <PhoneOff size={16} />, href: "/fechar-dms" },
@@ -197,6 +198,36 @@ export function Sidebar() {
 
   const switchOnCooldown = switchCooldownRemaining > 0
   const cooldownSeconds = Math.ceil(switchCooldownRemaining / 1000)
+
+  const [contextMenu, setContextMenu] = useState<{ tokenId: string; x: number; y: number } | null>(null)
+  const contextMenuRef = useRef<HTMLDivElement>(null)
+
+  const handleContextMenu = useCallback((e: React.MouseEvent, tokenId: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setContextMenu({ tokenId, x: e.clientX, y: e.clientY })
+  }, [])
+
+  const handleRemoverConta = useCallback(async () => {
+    if (!contextMenu) return
+    const id = contextMenu.tokenId
+    setContextMenu(null)
+    await removeToken(id)
+    if (outrasContas.length <= 1) {
+      setContasAbertas(false)
+    }
+  }, [contextMenu, removeToken, outrasContas.length])
+
+  useEffect(() => {
+    if (!contextMenu) return
+    const handleClick = () => setContextMenu(null)
+    window.addEventListener('click', handleClick)
+    window.addEventListener('contextmenu', handleClick)
+    return () => {
+      window.removeEventListener('click', handleClick)
+      window.removeEventListener('contextmenu', handleClick)
+    }
+  }, [contextMenu])
 
   const trocarConta = async (tokenId: string) => {
     const target = tokens.find((t) => t.id === tokenId)
@@ -314,9 +345,9 @@ export function Sidebar() {
               <div
                 ref={contasRef}
                 style={{
-                  height: contasAbertas ? contasRef.current?.scrollHeight : 0,
+                  height: contasAbertas ? 'auto' : 0,
                   opacity: contasAbertas ? 1 : 0,
-                  transition: 'height 200ms ease-out, opacity 150ms ease-out',
+                  transition: 'opacity 150ms ease-out',
                   overflow: 'hidden',
                 }}
               >
@@ -337,6 +368,7 @@ export function Sidebar() {
                         <button
                           key={token.id}
                           onClick={() => trocarConta(token.id)}
+                          onContextMenu={(e) => handleContextMenu(e, token.id)}
                           disabled={connecting || switchOnCooldown}
                           className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all hover:bg-secondary/80 disabled:opacity-50"
                         >
@@ -379,6 +411,7 @@ export function Sidebar() {
 
               <button
                 onClick={() => setContasAbertas(!contasAbertas)}
+                onContextMenu={(e) => handleContextMenu(e, contaAtiva.id)}
                 className="group flex w-full items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-secondary/60"
               >
                 <div className="relative">
@@ -434,6 +467,22 @@ export function Sidebar() {
           )}
         </div>
       </aside>
+
+      {contextMenu && (
+        <div
+          ref={contextMenuRef}
+          className="fixed z-[100] min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg animate-in fade-in-0 zoom-in-95"
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+        >
+          <button
+            onClick={handleRemoverConta}
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+          >
+            <Trash2 size={14} />
+            Remover conta
+          </button>
+        </div>
+      )}
 
       <AddAccountModal
         open={addModalOpen}

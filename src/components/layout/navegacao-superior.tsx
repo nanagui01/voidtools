@@ -14,6 +14,7 @@ const mapaRotas: Record<string, string> = {
   "tokens": "Tokens",
   "logs": "Logs",
   "limpar-dm": "Limpar DM",
+  "limpar-dm-amigos": "Limpar DM dos Amigos",
   "limpar-dms": "Limpar DMs Abertas",
   "remover-amigos": "Remover Amigos",
   "sair-servidores": "Sair de Servidores",

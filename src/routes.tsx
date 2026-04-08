@@ -14,6 +14,7 @@ const EnsurdecerCall = lazy(() => import('./app/(dashboard)/ensurdecer-call/page
 const FarmCall = lazy(() => import('./app/(dashboard)/farm-call/page'))
 const FecharDms = lazy(() => import('./app/(dashboard)/fechar-dms/page'))
 const LimparDm = lazy(() => import('./app/(dashboard)/limpar-dm/page'))
+const LimparDmAmigos = lazy(() => import('./app/(dashboard)/limpar-dm-amigos/page'))
 const LimparDms = lazy(() => import('./app/(dashboard)/limpar-dms/page'))
 const LimparPackage = lazy(() => import('./app/(dashboard)/limpar-package/page'))
 const ListarCall = lazy(() => import('./app/(dashboard)/listar-call/page'))
@@ -65,6 +66,7 @@ export function AppRoutes() {
           <Route path="farm-call" element={<FarmCall />} />
           <Route path="fechar-dms" element={<FecharDms />} />
           <Route path="limpar-dm" element={<LimparDm />} />
+          <Route path="limpar-dm-amigos" element={<LimparDmAmigos />} />
           <Route path="limpar-dms" element={<LimparDms />} />
           <Route path="limpar-package" element={<LimparPackage />} />
           <Route path="listar-call" element={<ListarCall />} />

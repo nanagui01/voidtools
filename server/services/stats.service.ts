@@ -20,6 +20,7 @@ export type ToolActionType =
   | 'clonar-servidor'
   | 'fechar-dms'
   | 'remover-amigos'
+  | 'limpar-dm-amigos'
   | 'remover-servidores'
   | 'scraper-icons'
   | 'call-utils'
