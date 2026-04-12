@@ -275,99 +275,105 @@ export function WhatsNew() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center transition-all duration-300 ${
+      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 transition-all duration-300 ${
         closing ? "opacity-0" : "opacity-100"
       }`}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={dismiss} />
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={dismiss} />
+
+      {/* Bloom decorativo */}
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
+          background: `radial-gradient(circle, var(--cor-painel, hsl(var(--primary))) 0%, transparent 70%)`,
+          filter: "blur(120px)",
+          opacity: 0.08,
+        }}
+      />
 
       {/* Card */}
       <div
-        className={`relative z-10 mx-4 flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c10]/95 shadow-2xl shadow-black/60 transition-all duration-300 ${
-          closing ? "translate-y-4 scale-95 opacity-0" : "translate-y-0 scale-100 opacity-100"
+        className={`relative z-10 flex max-h-[80vh] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-border bg-card/80 shadow-2xl shadow-black/40 backdrop-blur-xl transition-all duration-300 ${
+          closing ? "translate-y-6 scale-95 opacity-0" : "translate-y-0 scale-100 opacity-100"
         }`}
       >
         {/* ── Header ── */}
-        <div className="relative overflow-hidden px-7 pb-5 pt-7">
-          {/* Glow */}
+        <div className="relative px-6 pb-4 pt-6">
+          {/* Glow sutil no topo */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-30"
+            className="pointer-events-none absolute inset-x-0 top-0 h-32 opacity-20"
             style={{
-              background: "radial-gradient(ellipse at 50% -20%, var(--cor-painel, #6366f1) 0%, transparent 70%)",
+              background: "radial-gradient(ellipse at 50% 0%, var(--cor-painel, hsl(var(--primary))) 0%, transparent 70%)",
             }}
           />
 
+          {/* Fechar */}
           <button
             onClick={dismiss}
-            className="absolute right-4 top-4 rounded-lg p-1.5 text-white/30 transition-colors hover:bg-white/10 hover:text-white/70"
+            className="absolute right-3 top-3 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <X className="h-4 w-4" />
           </button>
 
-          <div className="relative">
-            <div className="mb-3 flex items-center gap-2.5">
-              <div
-                className="flex h-8 w-8 items-center justify-center rounded-xl ring-1 ring-white/10"
-                style={{ background: "linear-gradient(135deg, var(--cor-painel, #6366f1), color-mix(in srgb, var(--cor-painel, #6366f1), black 40%))" }}
-              >
-                <Sparkles className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-white/40">
-                O que há de novo
-              </span>
+          <div className="relative flex items-start gap-4">
+            {/* Ícone principal */}
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/20">
+              <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
 
-            <h2 className="text-2xl font-bold tracking-tight text-white">
-              {release.title}
-            </h2>
-
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-white/35">
-              <span className="rounded-md bg-white/[0.06] px-2 py-0.5 font-mono text-[11px] text-white/50">
-                v{release.version}
-              </span>
-              {formattedDate && (
-                <span className="flex items-center gap-1">
-                  <span className="text-white/20">•</span> {formattedDate}
-                </span>
-              )}
-              <span className="flex items-center gap-1">
-                <span className="text-white/20">•</span> {totalChanges} alteraç{totalChanges === 1 ? "ão" : "ões"}
-              </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                Novidades
+              </p>
+              <h2 className="mt-0.5 text-xl font-bold tracking-tight text-foreground texto-neon">
+                Versão {release.version}
+              </h2>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                {formattedDate && <span>{formattedDate}</span>}
+                <span className="text-border">•</span>
+                <span>{totalChanges} alteraç{totalChanges === 1 ? "ão" : "ões"}</span>
+              </div>
             </div>
           </div>
         </div>
 
+        {/* Divisor */}
+        <div className="mx-6 border-t border-border" />
+
         {/* ── Seções ── */}
-        <div className="flex-1 overflow-y-auto px-7 pb-3">
+        <div className="flex-1 overflow-y-auto px-6 py-4">
           <div className="space-y-5">
             {sections.map((section) => {
               const config = sectionConfig[section.type]
               const Icon = config.icon
               return (
                 <div key={section.type}>
-                  {/* Heading da seção */}
-                  <div className="mb-2.5 flex items-center gap-2">
-                    <div className={`flex h-5 w-5 items-center justify-center rounded-md ring-1 ${config.bg}`}>
-                      <Icon className={`h-2.5 w-2.5 ${config.color}`} />
+                  {/* Heading */}
+                  <div className="mb-2 flex items-center gap-2">
+                    <div className={`flex h-6 w-6 items-center justify-center rounded-lg ${config.bg} ring-1`}>
+                      <Icon className={`h-3 w-3 ${config.color}`} />
                     </div>
-                    <span className={`text-xs font-semibold uppercase tracking-wider ${config.color}`}>
+                    <span className={`text-xs font-semibold ${config.color}`}>
                       {config.label}
                     </span>
-                    <span className={`rounded-full px-1.5 py-px text-[10px] font-medium ${config.badge}`}>
+                    <span className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-medium ${config.badge}`}>
                       {section.items.length}
                     </span>
                   </div>
 
                   {/* Items */}
-                  <div className="space-y-1">
+                  <div className="rounded-lg border border-border bg-secondary/30 p-1">
                     {section.items.map((item, i) => (
                       <div
                         key={i}
-                        className="flex items-start gap-2.5 rounded-lg px-3 py-2 transition-colors hover:bg-white/[0.04]"
+                        className="flex items-start gap-2.5 rounded-md px-3 py-2 transition-colors hover:bg-secondary"
                       >
-                        <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${config.color} opacity-60`} />
-                        <span className="text-[13px] leading-relaxed text-white/75">{item}</span>
+                        <span className={`mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-current ${config.color} opacity-50`} />
+                        <span className="text-[13px] leading-relaxed text-foreground/80">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -378,10 +384,10 @@ export function WhatsNew() {
         </div>
 
         {/* ── Footer ── */}
-        <div className="flex items-center justify-between border-t border-white/[0.06] px-7 py-4">
+        <div className="flex items-center justify-between border-t border-border px-6 py-4">
           <button
             onClick={() => window.electronAPI?.shell.openExternal(release.url)}
-            className="flex items-center gap-1.5 text-xs text-white/25 transition-colors hover:text-white/50"
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs text-muted-foreground transition-all hover:bg-secondary hover:text-foreground"
           >
             <ExternalLink className="h-3 w-3" />
             Ver no GitHub
@@ -389,11 +395,7 @@ export function WhatsNew() {
 
           <button
             onClick={dismiss}
-            className="rounded-xl px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:brightness-110 active:scale-[0.97]"
-            style={{
-              background: "linear-gradient(135deg, var(--cor-painel, #6366f1), color-mix(in srgb, var(--cor-painel, #6366f1), black 25%))",
-              boxShadow: "0 4px 20px -4px color-mix(in srgb, var(--cor-painel, #6366f1), transparent 60%)",
-            }}
+            className="borda-neon rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.97]"
           >
             Entendi!
           </button>

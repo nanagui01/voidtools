@@ -77,6 +77,9 @@ publish:
   repo: BrunnoClear-V2
   releaseType: release
 
+releaseInfo:
+  releaseNotesFile: RELEASE_NOTES.md
+
 asar: true
 asarUnpack:
   - "node_modules/**/*.node"
