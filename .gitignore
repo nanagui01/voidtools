@@ -45,5 +45,6 @@ pnpm-debug.log*
 mentoria.md
 RELEASE_TEMPLATE.md
 RELEASE_NOTES.md
+scripts/update-release-notes.mjs
 # Misc
 *.tsbuildinfo
