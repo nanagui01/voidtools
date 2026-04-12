@@ -67,7 +67,6 @@ export function initUpdater(mainWindow: BrowserWindow) {
 
   ipcMain.handle('updater:isPackaged', () => app.isPackaged)
 
-  // Busca release notes de uma versão (ou a mais recente) via GitHub API com auth
   ipcMain.handle('updater:getReleaseNotes', async (_event, version?: string) => {
     try {
       const ghToken = process.env.GH_TOKEN || ''
@@ -92,7 +91,6 @@ export function initUpdater(mainWindow: BrowserWindow) {
       if (res.ok) {
         data = await res.json()
       } else if (version) {
-        // Se a tag não existe, tenta a latest
         console.log(`[WhatsNew] Tag não encontrada, tentando latest...`)
         const fallback = await fetch(
           `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`,
@@ -104,7 +102,6 @@ export function initUpdater(mainWindow: BrowserWindow) {
 
       if (!data) return null
 
-      // Se o body é null/vazio, tenta gerar release notes automaticamente via GitHub API
       if (!data.body && ghToken) {
         console.log(`[WhatsNew] Body vazio, tentando generate-notes...`)
         const tag = data.tag_name

@@ -92,7 +92,6 @@ function parseBody(body: string): ChangeSection[] {
   const sections: ChangeSection[] = []
   let currentType: SectionType | null = null
 
-  // Linhas para ignorar (geradas automaticamente pelo GitHub)
   const isNoise = (l: string) =>
     /^\*?\*?full changelog\*?\*?/i.test(l.trim()) ||
     /^https?:\/\/github\.com\/.+\/compare\//i.test(l.trim()) ||
@@ -104,24 +103,21 @@ function parseBody(body: string): ChangeSection[] {
     const line = raw.trim()
     if (!line || isNoise(line)) continue
 
-    // Detecta heading de seção (## ✨ Novidades, ## Correções, etc.)
     const headingMatch = line.match(/^#{1,3}\s+(.+)/)
     if (headingMatch) {
       currentType = detectSectionType(headingMatch[1])
-      // Garante que existe seção
       if (!sections.find((s) => s.type === currentType)) {
         sections.push({ type: currentType, items: [] })
       }
       continue
     }
 
-    // Item de lista
     const itemMatch = line.match(/^[-*•]\s+(.+)/)
     if (itemMatch) {
       const text = itemMatch[1]
-        .replace(/\*\*/g, "") // remove bold markdown
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // [text](url) → text
-        .replace(/ by @\S+ in .+$/i, "") // remove "by @user in #PR"
+        .replace(/\*\*/g, "") 
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+        .replace(/ by @\S+ in .+$/i, "")
         .trim()
 
       if (!text) continue
@@ -130,7 +126,6 @@ function parseBody(body: string): ChangeSection[] {
         const section = sections.find((s) => s.type === currentType)
         section?.items.push(text)
       } else {
-        // Sem seção definida — categoriza automaticamente
         const autoType = categorizeLineAuto(text)
         let section = sections.find((s) => s.type === autoType)
         if (!section) {
@@ -142,7 +137,6 @@ function parseBody(body: string): ChangeSection[] {
       continue
     }
 
-    // Linha de texto solta (não heading, não lista) — trata como item
     if (line.length > 5 && !line.startsWith("#")) {
       const cleaned = line
         .replace(/\*\*/g, "")
@@ -160,11 +154,9 @@ function parseBody(body: string): ChangeSection[] {
     }
   }
 
-  // Ordena: new → fix → improvement → other
   const order: SectionType[] = ["new", "fix", "improvement", "other"]
   sections.sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type))
 
-  // Remove seções vazias
   return sections.filter((s) => s.items.length > 0)
 }
 
@@ -201,7 +193,7 @@ export function WhatsNew() {
 
         console.log('[WhatsNew] Buscando release notes via IPC...')
         const data = await electronAPI.updater.getReleaseNotes(version)
-        console.log('[WhatsNew] Resposta IPC:', data)
+        console.log('[WhatsNew] Resposta IPC:', JSON.stringify(data, null, 2))
         if (data && data.body) {
           notes = {
             version: data.version?.replace(/^v/, "") ?? version,
@@ -209,6 +201,27 @@ export function WhatsNew() {
             body: data.body,
             publishedAt: data.published_at ?? "",
             url: data.html_url ?? "",
+          }
+        } else {
+          console.log('[WhatsNew] IPC retornou body vazio/null. Tentando fetch direto da latest...')
+          // Fallback direto no renderer — tenta buscar qualquer release com body
+          try {
+            const latestRes = await fetch(
+              `https://api.github.com/repos/brunnoxw/BrunnoClear-V2/releases`,
+              { headers: { Accept: "application/vnd.github.v3+json" } }
+            )
+            if (latestRes.ok) {
+              const releases: any[] = await latestRes.json()
+              const withBody = releases.find((r: any) => r.body && r.body.trim().length > 0)
+              if (withBody) {
+                console.log('[WhatsNew] Encontrada release com body:', withBody.tag_name)
+                notes = parseRelease(withBody)
+                // Usa a versão do app, não da release encontrada, pra marcar como vista corretamente
+                notes.version = version
+              }
+            }
+          } catch (e) {
+            console.log('[WhatsNew] Fallback fetch falhou:', e)
           }
         }
       } else {
