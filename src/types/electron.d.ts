@@ -42,6 +42,7 @@ export interface ElectronAPI {
     openReleases: () => Promise<void>
     getVersion: () => Promise<string>
     isPackaged: () => Promise<boolean>
+    getReleaseNotes: (version?: string) => Promise<{ version: string; name: string; body: string; published_at: string; html_url: string } | null>
     onStatus: (callback: (status: any) => void) => () => void
   }
 }

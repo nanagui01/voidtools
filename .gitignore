@@ -43,6 +43,6 @@ pnpm-debug.log*
 
 # Mentoria / notas pessoais
 mentoria.md
-
+RELEASE_TEMPLATE.md
 # Misc
 *.tsbuildinfo

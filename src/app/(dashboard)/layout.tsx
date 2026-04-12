@@ -5,6 +5,7 @@ import { NavegacaoSuperior } from "@/components/layout/navegacao-superior"
 import { FundoBloom } from "@/components/layout/fundo-bloom"
 import { Onboarding } from "@/components/layout/onboarding"
 import { UpdateBanner } from "@/components/layout/update-banner"
+import { WhatsNew } from "@/components/layout/whats-new"
 import { api } from "@/lib/api-client"
 import { useCorPainel } from "@/hooks/use-cor-painel"
 import { useRpcPresence } from "@/hooks/use-rpc"
@@ -74,6 +75,7 @@ export default function LayoutDashboard() {
           <Outlet />
         </div>
       </main>
+      <WhatsNew />
     </div>
   )
 }

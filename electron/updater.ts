@@ -67,6 +67,73 @@ export function initUpdater(mainWindow: BrowserWindow) {
 
   ipcMain.handle('updater:isPackaged', () => app.isPackaged)
 
+  // Busca release notes de uma versão (ou a mais recente) via GitHub API com auth
+  ipcMain.handle('updater:getReleaseNotes', async (_event, version?: string) => {
+    try {
+      const ghToken = process.env.GH_TOKEN || ''
+      console.log(`[WhatsNew] getReleaseNotes chamado — version=${version}, hasToken=${!!ghToken}`)
+      const headers: Record<string, string> = { Accept: 'application/vnd.github.v3+json' }
+      if (ghToken) headers.Authorization = `token ${ghToken}`
+
+      let url: string
+      if (version) {
+        const tag = version.startsWith('v') ? version : `v${version}`
+        url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/tags/${tag}`
+      } else {
+        url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`
+      }
+
+      console.log(`[WhatsNew] Buscando: ${url}`)
+      const res = await fetch(url, { headers })
+      console.log(`[WhatsNew] Resposta: ${res.status} ${res.statusText}`)
+
+      let data: any = null
+
+      if (res.ok) {
+        data = await res.json()
+      } else if (version) {
+        // Se a tag não existe, tenta a latest
+        console.log(`[WhatsNew] Tag não encontrada, tentando latest...`)
+        const fallback = await fetch(
+          `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`,
+          { headers }
+        )
+        console.log(`[WhatsNew] Fallback latest: ${fallback.status} ${fallback.statusText}`)
+        if (fallback.ok) data = await fallback.json()
+      }
+
+      if (!data) return null
+
+      // Se o body é null/vazio, tenta gerar release notes automaticamente via GitHub API
+      if (!data.body && ghToken) {
+        console.log(`[WhatsNew] Body vazio, tentando generate-notes...`)
+        const tag = data.tag_name
+        const genRes = await fetch(
+          `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/generate-notes`,
+          {
+            method: 'POST',
+            headers: { ...headers, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tag_name: tag }),
+          }
+        )
+        if (genRes.ok) {
+          const genData: any = await genRes.json()
+          console.log(`[WhatsNew] generate-notes OK: ${genData.body?.length ?? 0} chars`)
+          data.body = genData.body
+          if (!data.name || data.name === tag) data.name = genData.name
+        } else {
+          console.log(`[WhatsNew] generate-notes falhou: ${genRes.status}`)
+        }
+      }
+
+      console.log(`[WhatsNew] Release final: ${data.tag_name} — "${data.name}" (body: ${data.body?.length ?? 0} chars)`)
+      return { version: data.tag_name, name: data.name, body: data.body, published_at: data.published_at, html_url: data.html_url }
+    } catch (err) {
+      console.error(`[WhatsNew] Erro:`, err)
+      return null
+    }
+  })
+
   if (isDev) return
 
   autoUpdater.autoDownload = false
