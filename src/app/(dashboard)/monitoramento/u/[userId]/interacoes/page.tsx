@@ -255,12 +255,16 @@ export default function InteracoesPage() {
                       {i + 1}
                     </span>
                     {user.avatarUrl ? (
-                      <img src={user.avatarUrl} alt="" className="w-7 h-7 rounded-full shrink-0" />
-                    ) : (
-                      <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center shrink-0">
-                        <Users size={12} className="text-muted-foreground" />
-                      </div>
-                    )}
+                      <img
+                        src={user.avatarUrl}
+                        alt=""
+                        className="w-7 h-7 rounded-full shrink-0 object-cover"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden') }}
+                      />
+                    ) : null}
+                    <div className={`w-7 h-7 rounded-full bg-muted flex items-center justify-center shrink-0 ${user.avatarUrl ? 'hidden' : ''}`}>
+                      <Users size={12} className="text-muted-foreground" />
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{user.username}</p>
                       <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-0.5">

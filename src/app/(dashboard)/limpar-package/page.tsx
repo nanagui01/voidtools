@@ -674,12 +674,12 @@ export default function PaginaLimparPackage() {
                   src={currentUser.avatarUrl}
                   alt={currentUser.username}
                   className="h-10 w-10 rounded-full border-2 border-border object-cover"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden') }}
                 />
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-secondary/40 text-sm font-bold text-muted-foreground">
-                  {currentUser.username.charAt(0).toUpperCase()}
-                </div>
-              )}
+              ) : null}
+              <div className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-secondary/40 text-sm font-bold text-muted-foreground ${currentUser.avatarUrl ? 'hidden' : ''}`}>
+                {currentUser.username.charAt(0).toUpperCase()}
+              </div>
               <div className="min-w-0 flex-1">
                 <div className="text-xs uppercase tracking-wider text-muted-foreground">Backup</div>
                 <p className="truncate text-sm font-semibold text-foreground">{currentUser.username}</p>
@@ -748,12 +748,12 @@ export default function PaginaLimparPackage() {
                 src={currentUser.avatarUrl}
                 alt={currentUser.username}
                 className="h-11 w-11 shrink-0 rounded-full border-2 border-border object-cover"
+                onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden') }}
               />
-            ) : (
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary/40 text-sm font-bold text-muted-foreground">
-                {currentUser ? currentUser.username.charAt(0).toUpperCase() : "?"}
-              </div>
-            )}
+            ) : null}
+            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary/40 text-sm font-bold text-muted-foreground ${currentUser?.avatarUrl ? 'hidden' : ''}`}>
+              {currentUser ? currentUser.username.charAt(0).toUpperCase() : "?"}
+            </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1.5">

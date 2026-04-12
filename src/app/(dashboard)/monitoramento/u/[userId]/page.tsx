@@ -360,12 +360,11 @@ export default function MonitoramentoUserHome() {
                           {session.participants.slice(0, 5).map(p => (
                             <div key={p.userId} title={p.globalName || p.username}>
                               {p.avatarUrl ? (
-                                <img src={p.avatarUrl} alt="" className="w-4 h-4 rounded-full border border-background" />
-                              ) : (
-                                <div className="w-4 h-4 rounded-full bg-muted border border-background flex items-center justify-center">
-                                  <span className="text-[7px] font-bold">{(p.globalName || p.username)?.[0]?.toUpperCase()}</span>
-                                </div>
-                              )}
+                                <img src={p.avatarUrl} alt="" className="w-4 h-4 rounded-full border border-background object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden') }} />
+                              ) : null}
+                              <div className={`w-4 h-4 rounded-full bg-muted border border-background flex items-center justify-center ${p.avatarUrl ? 'hidden' : ''}`}>
+                                <span className="text-[7px] font-bold">{(p.globalName || p.username)?.[0]?.toUpperCase()}</span>
+                              </div>
                             </div>
                           ))}
                         </div>

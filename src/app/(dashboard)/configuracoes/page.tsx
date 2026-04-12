@@ -24,6 +24,7 @@ import { api } from "@/lib/api-client"
 import { aplicarCorPainel, aplicarAparencia, aplicarTema, resetarTema } from "@/hooks/use-cor-painel"
 import { TEMAS, getTema } from "@/lib/themes"
 import { ColorPicker } from "@/components/ui/color-picker"
+import { ThemePickerModal } from "@/components/theme-picker-modal"
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -116,10 +117,11 @@ export default function PaginaConfiguracoes() {
   }
 
   const updateAparencia = (key: string, value: unknown) => {
-    setSettings((s) => ({
-      ...s,
-      aparencia: { ...s.aparencia!, [key]: value } as AppSettings["aparencia"],
-    }))
+    setSettings((s) => {
+      const novaAparencia = { ...s.aparencia!, [key]: value } as AppSettings["aparencia"]
+      aplicarAparencia(novaAparencia)
+      return { ...s, aparencia: novaAparencia }
+    })
   }
 
   const pickDirectory = async (key: "backupsDir" | "logsDir") => {
@@ -178,93 +180,26 @@ export default function PaginaConfiguracoes() {
             <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 block">
               Tema
             </label>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              <button
-                onClick={() => setSettings((s) => ({ ...s, tema: "custom" }))}
-                className={`group relative flex flex-col items-center gap-2 rounded-xl border p-4 transition-all ${
-                  settings.tema === "custom"
-                    ? "border-primary bg-primary/10 ring-1 ring-primary/30"
-                    : "border-border bg-secondary/20 hover:border-primary/30"
-                }`}
-              >
-                <div className="flex h-10 w-full items-center justify-center gap-1.5 rounded-lg bg-black/40">
-                  <div className="h-5 w-5 rounded-full border-2 border-dashed border-muted-foreground" />
-                  <Palette size={12} className="text-muted-foreground" />
-                </div>
-                <span className="text-xs font-semibold text-foreground">Custom</span>
-                <span className="text-[9px] text-muted-foreground">Sua cor</span>
-              </button>
-
-              {TEMAS.map((tema) => (
-                <button
-                  key={tema.id}
-                  onClick={() => setSettings((s) => ({ ...s, tema: tema.id }))}
-                  className={`group relative flex flex-col items-center gap-2 rounded-xl border p-4 transition-all ${
-                    settings.tema === tema.id
-                      ? "border-primary bg-primary/10 ring-1 ring-primary/30"
-                      : "border-border bg-secondary/20 hover:border-primary/30"
-                  }`}
-                >
-                  <div className="flex h-10 w-full items-center justify-center gap-1.5 rounded-lg" style={{ background: tema.previewColors[0] }}>
-                    {tema.previewColors.map((c, i) => (
-                      <div
-                        key={i}
-                        className="h-5 w-5 rounded-full border border-white/10"
-                        style={{ backgroundColor: c }}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs font-semibold text-foreground">{tema.nome}</span>
-                  <span className="text-[9px] text-muted-foreground">{tema.descricao}</span>
-                </button>
-              ))}
-            </div>
+            <ThemePickerModal
+              tema={settings.tema ?? "custom"}
+              corPainel={settings.corPainel ?? "#ffffff"}
+              onSelectTema={(temaId) => {
+                setSettings((s) => ({ ...s, tema: temaId }))
+                if (temaId === 'custom' || temaId === 'padrao') {
+                  resetarTema()
+                  if (temaId === 'custom' && settings.corPainel) aplicarCorPainel(settings.corPainel)
+                } else {
+                  const t = getTema(temaId)
+                  if (t) aplicarTema(t)
+                }
+              }}
+              onSelectCor={(cor) => {
+                setSettings((s) => ({ ...s, corPainel: cor }))
+                resetarTema()
+                aplicarCorPainel(cor)
+              }}
+            />
           </div>
-
-          {settings.tema === "custom" && (
-            <>
-              <div className="border-t border-border" />
-              <div>
-                <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 block">
-                  Cor do Painel
-                </label>
-                <div className="flex items-start gap-6">
-                  <ColorPicker
-                    value={settings.corPainel ?? "#ffffff"}
-                    onChange={(color) => setSettings((s) => ({ ...s, corPainel: color }))}
-                    onChangeEnd={(color) => setSettings((s) => ({ ...s, corPainel: color }))}
-                  />
-                  <div className="space-y-3 pt-1">
-                    <div>
-                      <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-1.5 block">
-                        Hex
-                      </label>
-                      <Input
-                        value={settings.corPainel ?? "#ffffff"}
-                        onChange={(e) => setSettings((s) => ({ ...s, corPainel: e.target.value }))}
-                        className="max-w-[120px] border-border bg-secondary/40 font-mono text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-1.5 block">
-                        Presets
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {["#ffffff", "#00ff88", "#ff6b6b", "#4ecdc4", "#ffe66d", "#a855f7", "#3b82f6", "#f43f5e"].map((color) => (
-                          <button
-                            key={color}
-                            onClick={() => setSettings((s) => ({ ...s, corPainel: color }))}
-                            className="h-7 w-7 rounded-full border-2 border-border transition-transform hover:scale-110"
-                            style={{ backgroundColor: color }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
 
           <div className="border-t border-border" />
 
@@ -671,7 +606,17 @@ export default function PaginaConfiguracoes() {
           <span className="text-sm font-medium text-foreground">Alterações pendentes</span>
           <button
             onClick={() => {
-              setSettings(JSON.parse(savedSettings.current))
+              const prev = JSON.parse(savedSettings.current) as Partial<AppSettings>
+              setSettings(prev)
+              const temaId = prev.tema || 'custom'
+              if (temaId === 'custom' || temaId === 'padrao') {
+                resetarTema()
+                if (temaId === 'custom' && prev.corPainel) aplicarCorPainel(prev.corPainel)
+              } else {
+                const t = getTema(temaId)
+                if (t) aplicarTema(t)
+              }
+              if (prev.aparencia) aplicarAparencia(prev.aparencia)
             }}
             className="ml-1 flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >

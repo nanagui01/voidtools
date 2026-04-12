@@ -344,10 +344,9 @@ export default function PaginaFarmCall() {
                 {Array.from(members.values()).map((user) => (
                   <div key={user.userId} className="flex items-center gap-2 rounded-lg border border-border bg-secondary/20 px-3 py-2 text-sm">
                     {user.avatar ? (
-                      <img src={user.avatar} alt={user.username} className="h-5 w-5 rounded-full" />
-                    ) : (
-                      <div className="h-5 w-5 rounded-full bg-secondary" />
-                    )}
+                      <img src={user.avatar} alt={user.username} className="h-5 w-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden') }} />
+                    ) : null}
+                    <div className={`h-5 w-5 rounded-full bg-secondary ${user.avatar ? 'hidden' : ''}`} />
                     <span className="text-xs font-medium text-foreground">{user.username}</span>
                   </div>
                 ))}
