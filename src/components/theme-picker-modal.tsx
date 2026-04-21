@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Palette, Check, Sparkles, ChevronRight, Paintbrush } from "lucide-react"
+import { Palette, Check, Sparkles, ChevronRight, Paintbrush, X } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -112,7 +112,8 @@ export function ThemePickerModal({
 
       {/* Modal */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-[680px] gap-5">
+        <DialogContent className="max-w-[680px] max-h-[85vh] p-0 [&>button]:hidden !grid !grid-rows-[auto_1fr]">
+          <div className="shrink-0 p-6 pb-0">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2.5">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
@@ -124,7 +125,16 @@ export function ThemePickerModal({
               Selecione um tema para personalizar a aparência do painel
             </DialogDescription>
           </DialogHeader>
+          <button
+            onClick={() => setOpen(false)}
+            className="absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 z-10"
+          >
+            <X />
+            <span className="sr-only">Fechar</span>
+          </button>
+          </div>
 
+          <div className="flex-1 overflow-y-auto px-6 pb-6">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {/* Custom */}
             <button
@@ -246,6 +256,7 @@ export function ThemePickerModal({
               </div>
             </div>
           )}
+          </div>
         </DialogContent>
       </Dialog>
     </>

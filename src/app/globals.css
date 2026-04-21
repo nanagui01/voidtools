@@ -282,8 +282,8 @@ input[type="number"] {
   opacity: calc(var(--bloom-opacity) * 2);
 }
 
-:root[data-theme="manga"] .rounded-xl[class*="bg-card"],
-:root[data-theme="manga"] [class*="bg-card\/"] {
+:root[data-theme="manga"] .rounded-xl[class*="bg-card"]:not([data-slot="dialog-content"]),
+:root[data-theme="manga"] [class*="bg-card\/"]:not([data-slot="dialog-content"]) {
   border-radius: 0 !important;
   border: 2.5px solid #0a0a0a !important;
   box-shadow: 5px 5px 0 #0a0a0a;
@@ -291,14 +291,34 @@ input[type="number"] {
   position: relative;
 }
 
-:root[data-theme="manga"] .rounded-xl[class*="bg-card"]:hover,
-:root[data-theme="manga"] [class*="bg-card\/"]:hover {
+/* Exceção para dialogs - não aplicar estilo mangá */
+:root[data-theme="manga"] [data-slot="dialog-content"] {
+  border-radius: 0.75rem !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-lg) !important;
+  margin: 0 !important;
+  z-index: 50 !important;
+  border-width: 1px !important;
+}
+
+:root[data-theme="manga"] [data-slot="dialog-overlay"] {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+:root[data-theme="manga"] [data-slot="dialog-close"] {
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:root[data-theme="manga"] .rounded-xl[class*="bg-card"]:not([data-slot="dialog-content"]):hover,
+:root[data-theme="manga"] [class*="bg-card\/"]:not([data-slot="dialog-content"]):hover {
   box-shadow: 7px 7px 0 #0a0a0a;
   transform: translate(-1px, -1px);
 }
 
-:root[data-theme="manga"] .rounded-xl[class*="bg-card"]::before,
-:root[data-theme="manga"] [class*="bg-card\/"]::before {
+:root[data-theme="manga"] .rounded-xl[class*="bg-card"]:not([data-slot="dialog-content"])::before,
+:root[data-theme="manga"] [class*="bg-card\/"]:not([data-slot="dialog-content"])::before {
   content: "";
   position: absolute;
   top: -7px;
@@ -319,8 +339,8 @@ input[type="number"] {
   z-index: 2;
 }
 
-:root[data-theme="manga"] .rounded-xl[class*="bg-card"]::after,
-:root[data-theme="manga"] [class*="bg-card\/"]::after {
+:root[data-theme="manga"] .rounded-xl[class*="bg-card"]:not([data-slot="dialog-content"])::after,
+:root[data-theme="manga"] [class*="bg-card\/"]:not([data-slot="dialog-content"])::after {
   content: "";
   position: absolute;
   bottom: 10px;
@@ -482,8 +502,72 @@ input[type="number"] {
   border: 2px solid #0a0a0a;
 }
 
-:root[data-theme="manga"] [role="switch"],
-:root[data-theme="manga"] [role="checkbox"] {
-  border-radius: 0 !important;
+/* Switch e checkbox no tema manga - visual claro e distinto */
+:root[data-theme="manga"] [role="switch"] {
+  border-radius: 4px !important;
+  border: 3px solid #0a0a0a !important;
+  width: 56px !important;
+  height: 32px !important;
+  transition: all 0.25s ease !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 2px !important;
+  box-sizing: border-box !important;
+}
+
+:root[data-theme="manga"] [role="switch"][data-state="unchecked"] {
+  background: #f5f5f5 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+:root[data-theme="manga"] [role="switch"][data-state="checked"] {
+  background: #00cc6a !important;
+  box-shadow: 0 0 20px rgba(0, 204, 106, 0.9), inset 0 2px 4px rgba(255,255,255,0.3) !important;
+}
+
+:root[data-theme="manga"] [role="switch"] [data-slot="switch-thumb"] {
+  width: 24px !important;
+  height: 24px !important;
+  background: #ffffff !important;
   border: 2px solid #0a0a0a !important;
+  border-radius: 2px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
+  transition: all 0.25s ease !important;
+  position: relative !important;
+}
+
+:root[data-theme="manga"] [role="switch"][data-state="unchecked"] [data-slot="switch-thumb"] {
+  transform: translateX(2px) !important;
+}
+
+:root[data-theme="manga"] [role="switch"][data-state="unchecked"] [data-slot="switch-thumb"]::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #0a0a0a;
+  border-radius: 1px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+:root[data-theme="manga"] [role="switch"][data-state="checked"] [data-slot="switch-thumb"] {
+  transform: translateX(26px) !important;
+  background: #000000 !important;
+  box-shadow: 0 0 12px rgba(0, 204, 106, 0.9), 0 2px 6px rgba(0,0,0,0.4) !important;
+}
+
+:root[data-theme="manga"] [role="switch"][data-state="checked"] [data-slot="switch-thumb"]::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #00cc6a;
+  border-radius: 1px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px rgba(0, 204, 106, 0.8);
 }
