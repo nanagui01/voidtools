@@ -20,7 +20,6 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Tema escuro por padrão - Preto e Verde Neon */
   --background: #000000;
   --foreground: #e5e5e5;
   --card: #0a0a0a;
@@ -47,7 +46,6 @@
   --chart-5: #004422;
   --radius: 0.625rem;
   
-  /* Sidebar */
   --sidebar: #050505;
   --sidebar-foreground: #e5e5e5;
   --sidebar-primary: #ffffff;
@@ -57,16 +55,13 @@
   --sidebar-border: #1a1a1a;
   --sidebar-ring: #ffffff;
   
-  /* Cores personalizadas */
   --neon-verde: #ffffff;
   --neon-verde-suave: #00cc6a;
   --neon-verde-escuro: #004422;
 
-  /* Aparência customizável */
   --bloom-opacity: 0.12;
   --base-font-size: 16px;
 
-  /* Tema background */
   --theme-bg-opacity: 0;
 }
 
@@ -267,4 +262,228 @@ input[type="number"] {
   transition: opacity 0.5s ease;
   mask-image: var(--theme-bg-mask, none);
   -webkit-mask-image: var(--theme-bg-mask, none);
+}
+
+/* ═══ Tema Manga — papel branco, tinta preta, painéis recortados ═══ */
+
+:root[data-theme="manga"] .theme-bg-overlay {
+  filter: invert(1);
+  animation: manga-drift 50s linear infinite;
+}
+
+@keyframes manga-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 300px 300px; }
+}
+
+:root[data-theme="manga"] .bloom-verde {
+  filter: blur(100px) contrast(1.5);
+  mix-blend-mode: multiply;
+  opacity: calc(var(--bloom-opacity) * 2);
+}
+
+:root[data-theme="manga"] .rounded-xl[class*="bg-card"],
+:root[data-theme="manga"] [class*="bg-card\/"] {
+  border-radius: 0 !important;
+  border: 2.5px solid #0a0a0a !important;
+  box-shadow: 5px 5px 0 #0a0a0a;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  position: relative;
+}
+
+:root[data-theme="manga"] .rounded-xl[class*="bg-card"]:hover,
+:root[data-theme="manga"] [class*="bg-card\/"]:hover {
+  box-shadow: 7px 7px 0 #0a0a0a;
+  transform: translate(-1px, -1px);
+}
+
+:root[data-theme="manga"] .rounded-xl[class*="bg-card"]::before,
+:root[data-theme="manga"] [class*="bg-card\/"]::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 28px;
+  width: 56px;
+  height: 14px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #0a0a0a 0 3px,
+      transparent 3px 7px
+    ),
+    #ece5d3;
+  transform: rotate(-3.5deg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 2;
+}
+
+:root[data-theme="manga"] .rounded-xl[class*="bg-card"]::after,
+:root[data-theme="manga"] [class*="bg-card\/"]::after {
+  content: "";
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 11px;
+  height: 11px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'><path d='M7 0 L7.8 5.2 L13 6 L7.8 6.8 L7 14 L6.2 6.8 L1 6 L6.2 5.2 Z' fill='%230a0a0a'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0.45;
+  z-index: 1;
+}
+
+:root[data-theme="manga"] [data-slot="sidebar"],
+:root[data-theme="manga"] aside[data-sidebar] {
+  border-right: 2px solid #0a0a0a !important;
+  box-shadow:
+    6px 0 0 -4px #0a0a0a,
+    inset -8px 0 0 -6px #0a0a0a;
+}
+
+:root[data-theme="manga"] button[class*="bg-primary"],
+:root[data-theme="manga"] button[class*="bg-accent"]:not([class*="bg-accent-"]),
+:root[data-theme="manga"] button[class*="bg-destructive"],
+:root[data-theme="manga"] [role="button"][class*="bg-primary"] {
+  border-radius: 0 !important;
+  border: 2px solid #0a0a0a !important;
+  box-shadow: 4px 4px 0 #0a0a0a;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+  position: relative;
+}
+
+:root[data-theme="manga"] button[class*="bg-primary"]:hover:not(:disabled),
+:root[data-theme="manga"] button[class*="bg-accent"]:not([class*="bg-accent-"]):hover:not(:disabled),
+:root[data-theme="manga"] button[class*="bg-destructive"]:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #0a0a0a;
+}
+
+:root[data-theme="manga"] button[class*="bg-primary"]:active:not(:disabled),
+:root[data-theme="manga"] button[class*="bg-accent"]:not([class*="bg-accent-"]):active:not(:disabled),
+:root[data-theme="manga"] button[class*="bg-destructive"]:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #0a0a0a;
+}
+
+:root[data-theme="manga"] button[class*="border-"]:not([class*="bg-primary"]):not([class*="bg-accent"]):not([class*="bg-destructive"]) {
+  border-radius: 0 !important;
+  border-width: 2px !important;
+  border-color: #0a0a0a !important;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+:root[data-theme="manga"] button[class*="border-"]:not([class*="bg-primary"]):not([class*="bg-accent"]):not([class*="bg-destructive"]):hover:not(:disabled) {
+  background-color: #0a0a0a !important;
+  color: #ffffff !important;
+}
+
+:root[data-theme="manga"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+:root[data-theme="manga"] textarea,
+:root[data-theme="manga"] select {
+  border-radius: 0 !important;
+  border: 2px solid #0a0a0a !important;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+:root[data-theme="manga"] input:focus:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+:root[data-theme="manga"] textarea:focus,
+:root[data-theme="manga"] select:focus {
+  outline: none !important;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #0a0a0a !important;
+}
+
+:root[data-theme="manga"] h1,
+:root[data-theme="manga"] h2,
+:root[data-theme="manga"] h3 {
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+:root[data-theme="manga"] .text-2xl,
+:root[data-theme="manga"] .text-3xl,
+:root[data-theme="manga"] .text-4xl,
+:root[data-theme="manga"] .text-5xl {
+  font-weight: 900;
+}
+
+:root[data-theme="manga"] p[class*="uppercase"][class*="text-xs"],
+:root[data-theme="manga"] span[class*="uppercase"][class*="text-xs"],
+:root[data-theme="manga"] label[class*="uppercase"][class*="text-xs"],
+:root[data-theme="manga"] div[class*="uppercase"][class*="text-xs"] {
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  position: relative;
+  padding-left: 16px;
+}
+
+:root[data-theme="manga"] p[class*="uppercase"][class*="text-xs"]::before,
+:root[data-theme="manga"] span[class*="uppercase"][class*="text-xs"]::before,
+:root[data-theme="manga"] label[class*="uppercase"][class*="text-xs"]::before,
+:root[data-theme="manga"] div[class*="uppercase"][class*="text-xs"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  height: 3px;
+  background: #0a0a0a;
+  transform: translateY(-50%);
+}
+
+:root[data-theme="manga"] ::selection {
+  background: #0a0a0a;
+  color: #f5f1e8;
+}
+
+:root[data-theme="manga"] hr,
+:root[data-theme="manga"] [role="separator"] {
+  background: repeating-linear-gradient(
+    90deg,
+    #0a0a0a 0px,
+    #0a0a0a 6px,
+    transparent 6px,
+    transparent 10px
+  );
+  border: none;
+  height: 2px;
+}
+
+:root[data-theme="manga"] ::-webkit-scrollbar {
+  width: 12px;
+}
+:root[data-theme="manga"] ::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: 2px solid #0a0a0a;
+}
+:root[data-theme="manga"] ::-webkit-scrollbar-thumb {
+  background: #0a0a0a;
+  border-radius: 0;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+:root[data-theme="manga"] ::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+  background-clip: padding-box;
+}
+
+:root[data-theme="manga"] [class*="rounded-full"]:not(img):not([class*="bg-card"]):not(button) {
+  border-radius: 0 !important;
+}
+
+:root[data-theme="manga"] img[class*="rounded-full"],
+:root[data-theme="manga"] [class*="rounded-full"] img {
+  border: 2px solid #0a0a0a;
+}
+
+:root[data-theme="manga"] [role="switch"],
+:root[data-theme="manga"] [role="checkbox"] {
+  border-radius: 0 !important;
+  border: 2px solid #0a0a0a !important;
 }
