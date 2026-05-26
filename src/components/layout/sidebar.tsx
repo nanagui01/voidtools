@@ -45,6 +45,7 @@ import {
   Eye,
   Radio,
   Headphones,
+  Crosshair,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -122,6 +123,7 @@ const secoesMenu: SecaoMenu[] = [
       { titulo: "Elevador", icone: <MoveRight size={16} />, href: "/elevador" },
       { titulo: "Coleira", icone: <Anchor size={16} />, href: "/coleira" },
       { titulo: "Proteger User", icone: <Shield size={16} />, href: "/proteger-user" },
+      { titulo: "Tormentar", icone: <Crosshair size={16} />, href: "/tormentar" },
     ],
   },
   {

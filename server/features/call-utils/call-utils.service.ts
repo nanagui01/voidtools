@@ -12,6 +12,7 @@ interface ActiveCallTask {
   cleanup: () => Promise<void>
   toggleMute?: (mute: boolean) => void
   toggleDeaf?: (deaf: boolean) => void
+  updateTorment?: (flags?: Record<string, boolean>, nickname?: string) => { flags: Record<string, boolean>; nickname: string }
 }
 
 const activeCallTasks = new Map<string, ActiveCallTask>()
@@ -55,6 +56,15 @@ export async function toggleDeafCallTask(taskId: string, deaf: boolean) {
   return false
 }
 
+export async function updateTormentFlags(taskId: string, flags?: Record<string, boolean>, nickname?: string) {
+  for (const [, t] of activeCallTasks) {
+    if (t.taskId === taskId && t.updateTorment) {
+      return t.updateTorment(flags, nickname)
+    }
+  }
+  return null
+}
+
 /**
  * Executa utilitários de chamada: desconectar todos, mover membros,
  * entrar em call, tocar som, etc.
@@ -85,6 +95,8 @@ export async function callUtils(cfg: CallUtilsConfig) {
       return await coleira(client, cfg)
     case 'protect':
       return await protegerUsuario(client, cfg)
+    case 'torment':
+      return await tormentar(client, cfg)
     default:
       throw Object.assign(new Error('Ação inválida'), { statusCode: 400 })
   }
@@ -681,4 +693,200 @@ async function protegerUsuario(client: any, cfg: CallUtilsConfig) {
 
   logger.info('CallUtils', `Proteção ativa: ${membros.length} usuários no servidor ${guild.name}`)
   return { taskId: task.id, usernames: membros.map((m: any) => m.user.tag), guildName: guild.name, guildIcon }
+}
+
+async function tormentar(client: any, cfg: CallUtilsConfig) {
+  if (!cfg.userIds?.length || !cfg.guildId) {
+    throw Object.assign(new Error('userIds e guildId são obrigatórios'), { statusCode: 400 })
+  }
+
+  const userId = cfg.userIds[0]
+  const guild = client.guilds.cache.get(cfg.guildId)
+  if (!guild) {
+    throw Object.assign(new Error('Servidor não encontrado'), { statusCode: 400 })
+  }
+
+  const guildIcon = guild.iconURL?.({ format: 'png', size: 128 }) || null
+
+  const membro = await guild.members.fetch(userId).catch(() => null)
+  if (!membro) {
+    throw Object.assign(new Error('Usuário não encontrado no servidor'), { statusCode: 400 })
+  }
+
+  const existingKey = `torment-${cfg.guildId}-${userId}`
+  const existing = activeCallTasks.get(existingKey)
+  if (existing) {
+    await existing.cleanup()
+  }
+
+  const flags: Record<string, boolean> = {
+    persistentMute: !!cfg.flags?.persistentMute,
+    persistentDeaf: !!cfg.flags?.persistentDeaf,
+    autoDisconnect: !!cfg.flags?.autoDisconnect,
+    persistentNick: !!cfg.flags?.persistentNick,
+    blacklistChat: !!cfg.flags?.blacklistChat,
+  }
+  let forcedNick = cfg.nickname?.trim() || ''
+
+  const task = taskManager.createTask('call-utils', {
+    ...(cfg as unknown as Record<string, unknown>),
+    subAction: 'torment',
+    username: membro.user.tag,
+    userId,
+    guildName: guild.name,
+    guildIcon,
+    flags,
+    nickname: forcedNick,
+  })
+  const controller = taskManager.startTask(task.id)
+  if (!controller) throw new Error('Falha ao iniciar task')
+
+  let deveContinuar = true
+  const counters = { mute: 0, deaf: 0, disconnect: 0, nick: 0, chat: 0 }
+
+  const updateStatus = () => {
+    const ativos: string[] = []
+    if (flags.persistentMute) ativos.push('mute')
+    if (flags.persistentDeaf) ativos.push('deaf')
+    if (flags.autoDisconnect) ativos.push('disconnect')
+    if (flags.persistentNick) ativos.push('nick')
+    if (flags.blacklistChat) ativos.push('chat')
+    const total = counters.mute + counters.deaf + counters.disconnect + counters.nick + counters.chat
+    const label = ativos.length ? ativos.join(', ') : 'aguardando'
+    taskManager.updateProgress(task.id, total, 0, `Tormentando ${membro.user.tag} (${label}) — ${total} ações`)
+    taskManager.updateConfig(task.id, { flags: { ...flags }, nickname: forcedNick })
+  }
+
+  const voiceListener = async (oldState: any, newState: any) => {
+    if (!deveContinuar) return
+    if (!oldState.member || !newState.member) return
+    if (newState.member.id !== userId) return
+    if (newState.guild?.id !== guild.id) return
+
+    try {
+      if (flags.persistentMute && newState.channelId && newState.mute === false) {
+        await newState.member.voice.setMute(true).catch(() => {})
+        counters.mute++
+        updateStatus()
+      }
+
+      if (flags.persistentDeaf && newState.channelId && newState.deaf === false) {
+        await newState.member.voice.setDeaf(true).catch(() => {})
+        counters.deaf++
+        updateStatus()
+      }
+
+      if (flags.autoDisconnect && newState.channelId && oldState.channelId !== newState.channelId) {
+        await newState.member.voice.setChannel(null).catch(() => {})
+        counters.disconnect++
+        updateStatus()
+      }
+    } catch {}
+  }
+
+  const memberUpdateListener = async (oldMember: any, newMember: any) => {
+    if (!deveContinuar) return
+    if (newMember.id !== userId) return
+    if (newMember.guild?.id !== guild.id) return
+    if (!flags.persistentNick) return
+
+    try {
+      const desired = forcedNick || null
+      const current = newMember.nickname || null
+      if (current !== desired) {
+        await newMember.setNickname(desired || '').catch(() => {})
+        counters.nick++
+        updateStatus()
+      }
+    } catch {}
+  }
+
+  const messageListener = async (message: any) => {
+    if (!deveContinuar) return
+    if (!flags.blacklistChat) return
+    if (message.author?.id !== userId) return
+    if (message.guild?.id !== guild.id) return
+    try {
+      await message.delete().catch(() => {})
+      counters.chat++
+      updateStatus()
+    } catch {}
+  }
+
+  const cleanup = async () => {
+    deveContinuar = false
+    client.off('voiceStateUpdate', voiceListener)
+    client.off('guildMemberUpdate', memberUpdateListener)
+    client.off('messageCreate', messageListener)
+    stats.recordAction('call-utils', 0, {
+      action: 'torment',
+      mute: counters.mute,
+      deaf: counters.deaf,
+      disconnect: counters.disconnect,
+      nick: counters.nick,
+      chat: counters.chat,
+      username: membro.user.tag,
+    })
+    if (!taskManager.isAborted(task.id)) {
+      taskManager.completeTask(task.id)
+    }
+    activeCallTasks.delete(existingKey)
+    logger.info('CallUtils', `Tormento encerrado para ${membro.user.tag}`)
+  }
+
+  const updateTorment = (newFlags?: Record<string, boolean>, newNickname?: string) => {
+    if (newFlags) {
+      for (const k of Object.keys(flags)) {
+        if (typeof newFlags[k] === 'boolean') flags[k] = newFlags[k]
+      }
+    }
+    if (typeof newNickname === 'string') {
+      forcedNick = newNickname.trim()
+    }
+
+    if (flags.persistentNick) {
+      const desired = forcedNick || null
+      const current = membro.nickname || null
+      if (current !== desired) {
+        membro.setNickname(desired || '').catch(() => {})
+      }
+    }
+    if (flags.persistentMute && membro.voice?.channelId && membro.voice.mute === false) {
+      membro.voice.setMute(true).catch(() => {})
+    }
+    if (flags.persistentDeaf && membro.voice?.channelId && membro.voice.deaf === false) {
+      membro.voice.setDeaf(true).catch(() => {})
+    }
+    if (flags.autoDisconnect && membro.voice?.channelId) {
+      membro.voice.setChannel(null).catch(() => {})
+    }
+
+    updateStatus()
+    return { flags: { ...flags }, nickname: forcedNick }
+  }
+
+  client.on('voiceStateUpdate', voiceListener)
+  client.on('guildMemberUpdate', memberUpdateListener)
+  client.on('messageCreate', messageListener)
+
+  activeCallTasks.set(existingKey, {
+    taskId: task.id,
+    type: 'torment',
+    cleanup,
+    updateTorment,
+  })
+
+  updateStatus()
+  logger.info('CallUtils', `Tormento iniciado para ${membro.user.tag} em ${guild.name}`)
+
+  return {
+    taskId: task.id,
+    username: membro.user.tag,
+    userId,
+    guildName: guild.name,
+    guildIcon,
+    flags: { ...flags },
+    nickname: forcedNick,
+    avatarUrl: membro.user.displayAvatarURL?.({ format: 'png', size: 128 }) || null,
+  }
 }

@@ -43,6 +43,13 @@ class TaskManager extends EventEmitter {
     return controller
   }
 
+  updateConfig(taskId: string, patch: Record<string, unknown>) {
+    const task = this.tasks.get(taskId)
+    if (!task) return
+    task.config = { ...task.config, ...patch }
+    this.emit('task:config', { taskId, config: task.config, tool: task.tool })
+  }
+
   updateProgress(taskId: string, progress: number, total: number, message?: string, phase?: string, extra?: Record<string, unknown>) {
     const task = this.tasks.get(taskId)
     if (!task) return

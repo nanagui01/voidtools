@@ -38,6 +38,7 @@ const RemoverAmigos = lazy(() => import('./app/(dashboard)/remover-amigos/page')
 const SairServidores = lazy(() => import('./app/(dashboard)/sair-servidores/page'))
 const ScraperIcones = lazy(() => import('./app/(dashboard)/scraper-icones/page'))
 const Tasks = lazy(() => import('./app/(dashboard)/tasks/page'))
+const Tormentar = lazy(() => import('./app/(dashboard)/tormentar/page'))
 
 const MonitoramentoUserLayout = lazy(() => import('./app/(dashboard)/monitoramento/u/[userId]/layout'))
 
@@ -92,6 +93,7 @@ export function AppRoutes() {
           <Route path="sair-servidores" element={<SairServidores />} />
           <Route path="scraper-icones" element={<ScraperIcones />} />
           <Route path="tasks" element={<Tasks />} />
+          <Route path="tormentar" element={<Tormentar />} />
         </Route>
       </Routes>
     </Suspense>

@@ -45,6 +45,10 @@ pnpm-debug.log*
 mentoria.md
 RELEASE_TEMPLATE.md
 RELEASE_NOTES.md
+CHANGELOG.md
 scripts/update-release-notes.mjs
 # Misc
 *.tsbuildinfo
+
+# meu parceiro de codigo
+.claude/*

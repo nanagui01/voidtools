@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { validate } from '../../middleware'
 import { asyncHandler, requireConnected } from '../_shared'
-import { callUtils, getActiveCallTasks, stopCallTask, toggleMuteCallTask, toggleDeafCallTask } from './call-utils.service'
+import { callUtils, getActiveCallTasks, stopCallTask, toggleMuteCallTask, toggleDeafCallTask, updateTormentFlags } from './call-utils.service'
 
 const router = Router()
 
@@ -20,6 +20,7 @@ const callUtilsSchema = z.object({
     'elevator',
     'leash',
     'protect',
+    'torment',
   ]),
   channelId: z.string().optional(),
   sourceChannelId: z.string().optional(),
@@ -29,6 +30,14 @@ const callUtilsSchema = z.object({
   categoryId: z.string().optional(),
   selfMute: z.boolean().optional(),
   selfDeaf: z.boolean().optional(),
+  flags: z.object({
+    persistentMute: z.boolean().optional(),
+    persistentDeaf: z.boolean().optional(),
+    autoDisconnect: z.boolean().optional(),
+    persistentNick: z.boolean().optional(),
+    blacklistChat: z.boolean().optional(),
+  }).optional(),
+  nickname: z.string().optional(),
 })
 
 router.post('/call-utils', validate(callUtilsSchema), asyncHandler(async (req, res) => {
@@ -64,6 +73,16 @@ router.patch('/call-utils/:taskId/deaf', asyncHandler(async (req, res) => {
     return
   }
   res.json({ success: true, deaf: !!deaf })
+}))
+
+router.patch('/call-utils/:taskId/torment', asyncHandler(async (req, res) => {
+  const { flags, nickname } = req.body as { flags?: Record<string, boolean>; nickname?: string }
+  const updated = await updateTormentFlags(req.params.taskId, flags, nickname)
+  if (!updated) {
+    res.status(404).json({ success: false, error: 'Task não encontrada' })
+    return
+  }
+  res.json({ success: true, flags: updated.flags, nickname: updated.nickname })
 }))
 
 export default router

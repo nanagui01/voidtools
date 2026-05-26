@@ -112,9 +112,17 @@ export interface FecharDmsConfig {
   tokenId: string
 }
 
+export interface TormentFlags {
+  persistentMute?: boolean
+  persistentDeaf?: boolean
+  autoDisconnect?: boolean
+  persistentNick?: boolean
+  blacklistChat?: boolean
+}
+
 export interface CallUtilsConfig {
   tokenId: string
-  action: 'disconnect-all' | 'move-members' | 'farm-hours' | 'mute-all' | 'unmute-all' | 'deafen-all' | 'undeafen-all' | 'list-members' | 'elevator' | 'leash' | 'protect'
+  action: 'disconnect-all' | 'move-members' | 'farm-hours' | 'mute-all' | 'unmute-all' | 'deafen-all' | 'undeafen-all' | 'list-members' | 'elevator' | 'leash' | 'protect' | 'torment'
   channelId?: string
   sourceChannelId?: string
   targetChannelId?: string
@@ -123,6 +131,8 @@ export interface CallUtilsConfig {
   categoryId?: string
   selfMute?: boolean
   selfDeaf?: boolean
+  flags?: TormentFlags
+  nickname?: string
 }
 
 export interface PrefixCommandsConfig {

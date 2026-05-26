@@ -1,11 +1,61 @@
 import { autoUpdater, UpdateInfo } from 'electron-updater'
 import { BrowserWindow, ipcMain, shell, app, dialog } from 'electron'
 import path from 'path'
+import fs from 'fs'
 
 const isDev = !app.isPackaged
 
 const GITHUB_OWNER = 'brunnoxw'
 const GITHUB_REPO = 'BrunnoClear-V2'
+
+const FORCE_LOCAL_CHANGELOG = process.env.FORCE_LOCAL_CHANGELOG === '1'
+
+function readLocalChangelog(version?: string): { version: string; name: string; body: string; published_at: string; html_url: string } | null {
+  const candidates = [
+    path.join(process.cwd(), 'CHANGELOG.md'),
+    path.join(__dirname, '..', '..', 'CHANGELOG.md'),
+    path.join(__dirname, '..', '..', '..', 'CHANGELOG.md'),
+  ]
+  let raw: string | null = null
+  let found = ''
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(p)) {
+        raw = fs.readFileSync(p, 'utf8')
+        found = p
+        break
+      }
+    } catch {}
+  }
+  if (!raw) {
+    console.log('[WhatsNew] CHANGELOG.md local não encontrado em:', candidates)
+    return null
+  }
+  console.log(`[WhatsNew] Lendo CHANGELOG.md local: ${found}`)
+
+  const blocks = raw.split(/^# v/m).map((b) => b.trim()).filter(Boolean)
+  if (blocks.length === 0) return null
+
+  const target = (version || '').replace(/^v/, '').trim()
+
+  const parseBlock = (block: string) => {
+    const firstLine = block.split('\n', 1)[0] || ''
+    const ver = (firstLine.match(/^([\d.]+)/)?.[1] || '').trim()
+    const name = firstLine.includes('—') ? firstLine.split('—').slice(1).join('—').trim() : `Versão ${ver}`
+    const body = block.split('\n').slice(1).join('\n').replace(/^---\s*$/m, '').trim()
+    return { ver, name, body }
+  }
+
+  let picked = blocks.map(parseBlock).find((b) => target && b.ver === target) || parseBlock(blocks[0])
+
+  return {
+    version: `v${picked.ver}`,
+    name: picked.name ? `v${picked.ver} — ${picked.name}` : `Versão ${picked.ver}`,
+    body: picked.body,
+    published_at: new Date().toISOString(),
+    html_url: `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/blob/main/CHANGELOG.md`,
+  }
+}
 
 export type UpdateStatus =
   | { status: 'checking' }
@@ -68,6 +118,11 @@ export function initUpdater(mainWindow: BrowserWindow) {
   ipcMain.handle('updater:isPackaged', () => app.isPackaged)
 
   ipcMain.handle('updater:getReleaseNotes', async (_event, version?: string) => {
+    if (FORCE_LOCAL_CHANGELOG) {
+      console.log('[WhatsNew] FORCE_LOCAL_CHANGELOG ativo — lendo CHANGELOG.md local')
+      const local = readLocalChangelog(version)
+      if (local) return local
+    }
     try {
       const ghToken = process.env.GH_TOKEN || ''
       console.log(`[WhatsNew] getReleaseNotes chamado — version=${version}, hasToken=${!!ghToken}`)

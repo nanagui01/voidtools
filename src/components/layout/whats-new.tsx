@@ -4,6 +4,7 @@ import { X, Sparkles, Bug, Zap, Wrench, ExternalLink } from "lucide-react"
 const GITHUB_OWNER = "brunnoxw"
 const GITHUB_REPO = "BrunnoClear-V2"
 const STORAGE_KEY = "changelog-versao-vista"
+const FORCE_PREVIEW = import.meta.env.VITE_FORCE_CHANGELOG === '1'
 
 interface ReleaseNote {
   version: string
@@ -185,8 +186,8 @@ export function WhatsNew() {
         if (!version || cancelled) return
 
         const lastSeen = localStorage.getItem(STORAGE_KEY)
-        console.log('[WhatsNew] Última versão vista:', lastSeen)
-        if (lastSeen === version) {
+        console.log('[WhatsNew] Última versão vista:', lastSeen, 'force:', FORCE_PREVIEW)
+        if (!FORCE_PREVIEW && lastSeen === version) {
           console.log('[WhatsNew] Já viu esta versão, saindo.')
           return
         }
@@ -232,7 +233,7 @@ export function WhatsNew() {
         if (!version || cancelled) return
 
         const lastSeen = localStorage.getItem(STORAGE_KEY)
-        if (lastSeen === version) return
+        if (!FORCE_PREVIEW && lastSeen === version) return
       }
       if (cancelled) return
 
@@ -259,7 +260,7 @@ export function WhatsNew() {
     setTimeout(() => {
       setVisible(false)
       setClosing(false)
-      if (release) {
+      if (release && !FORCE_PREVIEW) {
         localStorage.setItem(STORAGE_KEY, release.version)
       }
     }, 300)
