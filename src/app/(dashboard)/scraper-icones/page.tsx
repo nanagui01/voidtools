@@ -24,7 +24,7 @@ type Phase = "idle" | "running" | "completed" | "error"
 export default function PaginaScraperIcones() {
   const { activeToken } = useTokens()
   const [sourceChannelId, setSourceChannelId] = useState("")
-  const [fileType, setFileType] = useState<"png_jpg" | "gif" | "all">("all")
+  const [fileType, setFileType] = useState<"png/jpg" | "gif" | "todos">("todos")
   const [sendMethod, setSendMethod] = useState<"webhook" | "channel">("webhook")
   const [webhookUrl, setWebhookUrl] = useState("")
   const [targetChannelId, setTargetChannelId] = useState("")
@@ -176,7 +176,7 @@ export default function PaginaScraperIcones() {
             <div className="space-y-2">
               <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Tipo de Arquivo</label>
               <div className="flex gap-2">
-                {(["all", "png_jpg", "gif"] as const).map((t) => (
+                {(["todos", "png/jpg", "gif"] as const).map((t) => (
                   <button
                     key={t}
                     onClick={() => setFileType(t)}
@@ -186,7 +186,7 @@ export default function PaginaScraperIcones() {
                         : "border-border bg-secondary/20 text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {t === "all" ? "Todos" : t === "png_jpg" ? "PNG/JPG" : "GIF"}
+                    {t === "todos" ? "Todos" : t === "png/jpg" ? "PNG/JPG" : "GIF"}
                   </button>
                 ))}
               </div>
